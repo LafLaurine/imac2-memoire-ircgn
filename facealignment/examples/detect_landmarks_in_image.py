@@ -18,7 +18,7 @@ def parse_args():
     return args
 
 def main():
-    # Run the 3D face alignment with cpu on a test image, without CUDA.
+    # Run the 3D face alignment with CUDA on a test image : change to cpu to test with your cpu.
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cuda', flip_input=True)
 
     input_img = io.imread(image_path)

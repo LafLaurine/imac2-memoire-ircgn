@@ -38,10 +38,10 @@ def main():
         imagePoints = imagePoints[0]
         # Compute the Mean-Centered-Scaled Points
         mean = np.mean(imagePoints, axis=0) # <- This is the unscaled mean
-        scaled = (imagePoints / np.linalg.norm(imagePoints[42] - imagePoints[39])) * 0.06 # Set the inner eye distance to 60cm (just because)
+        scaled = (imagePoints / np.linalg.norm(imagePoints[42] - imagePoints[39])) * 0.06 # Set the inner eye distance to 6cm
         centered = scaled - np.mean(scaled, axis=0) # <- This is the scaled mean
 
-        # Construct a "rotation" matrix (strong simplification, might have shearing)
+        # Construct a "rotation" matrix 
         rotationMatrix = np.empty((3,3))
         rotationMatrix[0,:] = (centered[16] - centered[0])/np.linalg.norm(centered[16] - centered[0])
         rotationMatrix[1,:] = (centered[8] - centered[27])/np.linalg.norm(centered[8] - centered[27])

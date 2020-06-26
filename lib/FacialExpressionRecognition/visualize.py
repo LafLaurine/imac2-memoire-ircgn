@@ -11,12 +11,17 @@ from torch.autograd import Variable
 import transforms as transforms
 from skimage import io
 from skimage.transform import resize
-from models import *
+
+import sys
+sys.path.append('../../')
+from models.FacialExpressionRecognition import *
+
 
 def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='Detecting facial expression')
     parser.add_argument('--image', dest='image_path', help='Path of image')
+    parser.add_argument('--output', dest='output_path', help='Path of the output')
     args = parser.parse_args()
     return args
 
@@ -69,8 +74,7 @@ def main():
     axes.set_yticks([])
     plt.tight_layout()
 
-
-    plt.subplots_adjust(left=0.05, bottom=0.2, right=0.95, top=0.9, hspace=0.02, wspace=0.3)
+    plt.subplots_adjust(left=0.2, bottom=0.2, right=0.95, top=0.9, hspace=0.02, wspace=0.3)
 
     plt.subplot(1, 3, 2)
     ind = 0.1+0.6*np.arange(len(class_names))    # the x locations for the groups
@@ -83,8 +87,7 @@ def main():
     plt.ylabel(" Classification Score ",fontsize=16)
     plt.xticks(ind, class_names, rotation=45, fontsize=14)
 
-    #plt.show()
-    plt.savefig(os.path.join('images/results/l.png'))
+    plt.savefig(os.path.join(output_path))
     plt.close()
 
     print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
@@ -92,4 +95,5 @@ def main():
 if __name__ == '__main__':
     args = parse_args()
     image_path = args.image_path
+    output_path = args.output_path
     main()

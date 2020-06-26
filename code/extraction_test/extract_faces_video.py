@@ -40,6 +40,7 @@ if __name__ == "__main__":
             right_eye = extract_right_eye_center(shape)
 
             M = get_rotation_matrix(left_eye, right_eye)
+            # affine transformation is applied
             rotated = cv2.warpAffine(img, M, (s_width, s_height), flags=cv2.INTER_CUBIC)
 
             cropped = crop_image(rotated, det)
@@ -53,6 +54,5 @@ if __name__ == "__main__":
             cv2.imwrite(output_image_path, cropped)
             count = count + 1
 
-# When everything done, release the capture
 cap.release()
 cv2.destroyAllWindows()

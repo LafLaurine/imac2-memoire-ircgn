@@ -12,8 +12,7 @@ min_confidence = 0.2
 start_frame_default = 0
 end_frame_default = None
 step_frame_default = 2
-max_frame_default = 50
-
+max_frame_default = 300
 
 parser = argparse.ArgumentParser(description="Extract faces and warp according to facial landmarks.")
 parser.add_argument("--source",    '-s', required=True, type=str, help="video from which to extract.")

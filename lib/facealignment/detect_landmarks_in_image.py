@@ -1,8 +1,6 @@
 import face_alignment
 import argparse
-import sys
 import cv2
-sys.path.append('..')
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from skimage import io
@@ -71,7 +69,6 @@ def main():
                         ((int)((objectPoint[0] * 1000.0) + 320.0), 
                             (int)((objectPoint[1] * 1000.0) + 240.0)), 
                         cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1, cv2.LINE_AA)
-    #cv2.imshow('Webcam View', frame)
 
     pred_type = collections.namedtuple('prediction_type', ['slice', 'color'])
     pred_types = {'face': pred_type(slice(0, 17), (0.682, 0.780, 0.909, 0.5)),

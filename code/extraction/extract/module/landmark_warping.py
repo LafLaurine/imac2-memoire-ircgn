@@ -4,8 +4,6 @@ import cv2
 from . import common_utils as ut
 from . import common_face as fc
 
-
-
 #For dlib’s 68-point facial landmark detector:
 class LandmarkFinder:
     jaw             = 'jaw'

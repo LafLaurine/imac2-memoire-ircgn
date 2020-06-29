@@ -175,12 +175,9 @@ class FaceExtractor:
                                                 net_landmark=net_landmark,
                                                 warper=warper,
                                                 method_detection=method_detection,
-
                                                 min_confidence=min_confidence,
-
                                                 size_net=size_net,
                                                 mean_net=mean_net,
-
                                                 are_warped=are_warped,
                                                 are_culled=are_culled,
                                                 type_tracker=type_tracker,
@@ -263,7 +260,6 @@ class FaceExtractor:
                                                 min_confidence=min_confidence,
                                                 size_net=size_net,
                                                 mean_net=mean_net,
-
                                                 are_warped=False,
                                                 are_culled=False,
                                                 type_tracker=type_tracker,
@@ -277,10 +273,8 @@ class FaceExtractor:
                                            frame=frame,
                                            are_saved_landmarks=are_saved_landmarks,
                                            is_saved_rectangle=is_saved_rectangle)
-            # frame = cv2.resize(frame, (1920, 1080))
-            cv2.namedWindow("whatever", cv2.WINDOW_FREERATIO)
-            cv2.setWindowProperty("whatever", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-            frame.show("whatever")
+            cv2.namedWindow("Person", cv2.WINDOW_FREERATIO)
+            frame.show("Person")
         cv2.destroyAllWindows()
         return
 
@@ -294,10 +288,8 @@ class FaceExtractor:
                         warper,
                         method_detection=method_detection_default,  # name of extraction method to be used
                         min_confidence=min_confidence_default,  # confidence threshold
-
                         size_net=size_net_default,
                         mean_net=mean_net_default,
-
                         are_warped=are_warped_default,
                         are_culled=are_culled_default,
                         type_tracker=type_tracker_default,  # WHEN TRACKING: tracker type such as MIL, Boosting...
@@ -352,7 +344,6 @@ class FaceExtractor:
                 name_config_model_face  = name_config_model_face_default,  # path to prototxt configuration file
                 size_net                = size_net_default,  # size of the processing dnn
                 mean_net                = mean_net_default,  # mean colour to be substracted
-
                 are_warped              = are_warped_default,
                 are_culled              = are_culled_default,
                 type_tracker            = type_tracker_default,  # WHEN TRACKING: tracker type such as MIL, Boosting...
@@ -370,8 +361,6 @@ class FaceExtractor:
                                                            name_model_landmark,
                                                            name_config_model_face)
 
-
-
         warper = lndm.LandmarkWarper(pair_resize,
                                      pairs_interest_prop,        #then, read frames from input video source
                                      mode_border,
@@ -386,12 +375,9 @@ class FaceExtractor:
                                     net_landmark=net_landmark,
                                     warper=warper,
                                     method_detection=method_detection,
-
                                     min_confidence=min_confidence,
-
                                     size_net=size_net,
                                     mean_net=mean_net,
-
                                     are_warped=are_warped,
                                     are_culled=are_culled,
                                     type_tracker=type_tracker,

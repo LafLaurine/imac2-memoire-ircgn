@@ -80,7 +80,6 @@ class Face:
     def is_valid(self):
         if self.landmarks() is None:
             raise ValueError("Features need to be set before validation.")
-        # TODO : FIND A BETTER CRITERIA
         return True
 
     def save(self, dir_out, are_landmarks_saved=False, is_rectangle_saved=False):

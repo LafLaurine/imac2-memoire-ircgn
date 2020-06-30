@@ -10,9 +10,9 @@ from .module import landmark_warping as lndm
 
 ## MOST IMPORTANT; dimensions of the ouput
 ## Needs to correspond to input for classifiers
-DIM_RESIZE                       = (256, 256)
+DIM_RESIZE = (256, 256)
 
-## Face detection model (can't touch this)
+## Face detection model
 dir_model_face_default = "face_model"
 name_config_model_face_default   = "deploy.prototxt.txt"
 name_model_face_default          = "res10_300x300_ssd_iter_140000.caffemodel"
@@ -56,8 +56,6 @@ log_enabled_default               = True
 
 # Using pre-trained OpenCV CNN model for face detection
 
-# TODO: could be issues with faces too close to the edges of the image
-# in case of squared output. Might be a problem.
 """"
 Detection method can either of:
    'DNN'            : using DNN
@@ -126,7 +124,6 @@ class FaceExtractor:
             name_config_model_face=name_config_model_face_default,  # path to prototxt configuration file
             size_net=size_net_default,  # size of the processing dnn
             mean_net=mean_net_default,  # mean colour to be substracted
-
             are_warped=are_warped_default,
             are_culled=are_culled_default,
             type_tracker=type_tracker_default,  # WHEN TRACKING: tracker type such as MIL, Boosting...
@@ -159,7 +156,6 @@ class FaceExtractor:
                     path_file_noext = os.path.splitext(path_file)[0]
                     dir_out_frames = os.path.join(dir_out, ut.get_path_without_basedir(path_file_noext))
                     # now we extract faces from this video file
-                     #####
                     # then, read frames from input video source
                     ut.log(log_enabled, "[INFO] reading video file...")
                     list_frames = FaceExtractor.read_frames(path_file,
@@ -466,6 +462,8 @@ class FaceExtractor:
                 person.cull_faces()
             if are_warped:
                 warper.warp_person(person)
+            elif not are_warped:
+                warper.resize_person(person)
 
     @staticmethod
     def save_people(list_people, dir_out, are_saved_landmarks, is_saved_rectangle):

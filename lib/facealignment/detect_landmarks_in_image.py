@@ -3,7 +3,6 @@ import argparse
 import cv2
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
-from skimage import io
 import collections
 import numpy as np
 from math import cos, sin
@@ -19,35 +18,60 @@ def main():
     # Run the 3D face alignment with CUDA on a test image : change to cpu to test with your cpu.
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cuda', flip_input=True)
 
-    input_img = io.imread(image_path)
+    frame =  cv2.imread(image_path)
 
-    preds = fa.get_landmarks(input_img)[-1]
+    preds = fa.get_landmarks(frame)[-1]
     # 2D-Plot
     plot_style = dict(marker='o',
                     markersize=4,
                     linestyle='-',
                     lw=2)
 
-    frame =  cv2.imread(image_path)
-    # Clear the indices frame
+
+    # Clear the indices frame : create an array filled with zero, with the size of frame
     canonical = np.zeros(frame.shape)
-    imagePoints = fa.get_landmarks_from_image(input_img)
+    # Get landmarks of the input image
+    imagePoints = fa.get_landmarks_from_image(frame)
     if(imagePoints is not None):
+        # Get the array
         imagePoints = imagePoints[0]
         # Compute the Mean-Centered-Scaled Points
-        mean = np.mean(imagePoints, axis=0) # <- This is the unscaled mean
+        mean = np.mean(imagePoints, axis=0)
         scaled = (imagePoints / np.linalg.norm(imagePoints[42] - imagePoints[39])) * 0.06 # Set the inner eye distance to 6cm
-        centered = scaled - np.mean(scaled, axis=0) # <- This is the scaled mean
+        # Scaled the mean
+        centered = scaled - np.mean(scaled, axis=0)
 
+        # Transform array of landmarks points to a matrice
+        X = np.asmatrix(imagePoints)
+        y = np.asmatrix(imagePoints)
+        # Get the number of column
+        n = X.shape[1]
+        # Get the rank of the matrice
+        r = np.linalg.matrix_rank(X)
+        # Find the equivalent to our matrix of features using singular value decomposition
+        U, sigma, VT = np.linalg.svd(X, full_matrices=False)
+        # D^+ can be derived from sigma
+        D_plus = np.diag(np.hstack([1/sigma[:r], np.zeros(n-r)]))
+        # V is equal to the transpose of its transpose
+        V = VT.T
+        X_plus = V.dot(D_plus).dot(U.T)
+        # Least square solution
+        w = X_plus.dot(y)
+        # Error of the least square solution
+        error = np.linalg.norm(X.dot(w) - y, ord=2) ** 2
+        
         # Construct a "rotation" matrix 
         rotationMatrix = np.empty((3,3))
-        rotationMatrix[0,:] = (centered[16] - centered[0])/np.linalg.norm(centered[16] - centered[0])
-        rotationMatrix[1,:] = (centered[8] - centered[27])/np.linalg.norm(centered[8] - centered[27])
+        rotationMatrix[0,:] = (w[16] - w[0])/np.linalg.norm(w[16] - w[0])
+        rotationMatrix[1,:] = (w[8] - w[27])/np.linalg.norm(w[8] - w[27])
         rotationMatrix[2,:] = np.cross(rotationMatrix[0, :], rotationMatrix[1, :])
         invRot = np.linalg.inv(rotationMatrix)
 
         # Object-space points, these are what you'd run OpenCV's solvePnP() with
         objectPoints = centered.dot(invRot)
+        '''
+        solvePnP implements several algorithms for pose estimation which can be selected using the parameter flag. 
+        By default it uses the flag SOLVEPNP_ITERATIVE which is essentially the DLT solution followed by Levenberg-Marquardt optimization.
 
         # Draw the computed data
         for i, (imagePoint, objectPoint) in enumerate(zip(imagePoints, objectPoints)):
@@ -109,7 +133,7 @@ def main():
 
     ax.view_init(elev=90., azim=90.)
     ax.set_xlim(ax.get_xlim()[::-1])
-    plt.show()
+    plt.show()'''
 
         
 if __name__ == '__main__':

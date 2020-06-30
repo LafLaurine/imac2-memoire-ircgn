@@ -1,5 +1,5 @@
 import numpy as np
-import cv2 #REQUIRES OpenCV 3
+import cv2
 
 from . import common_utils as ut
 from . import common_face as fc
@@ -24,14 +24,6 @@ class DetectionMethod:
     @staticmethod
     def to_track(method_detection):
         return method_detection == DetectionMethod.dnn_tracking
-
-
-class DetectionFunctor:
-    # __ ???
-    # TODO !
-    pass
-
-
 
 def compute_detection(frame,
                       net,
@@ -94,9 +86,7 @@ def faces_from_detection(list_detections,
     return list_faces
 
 def face_from_box(box, frame: ut.Frame):
-    # TODO: DONE HERE
     return fc.Face(ut.Frame(frame.image(), frame.index(), frame.to_search()), box)
 
 def load_network_detection(config_detection, model_detection):
     return cv2.dnn.readNetFromCaffe(config_detection, model_detection)
-

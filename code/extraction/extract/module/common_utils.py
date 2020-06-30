@@ -10,7 +10,7 @@ param_codec_default = [cv2.IMWRITE_PNG_COMPRESSION, 0]
 class Frame:
     # __image
     # __index
-    # __to_search : is the frame to be searched for faces ?
+    # __to_search : is the frame to be searched for faces
     def __init__(self, image, index, to_search):
         self.__image = image
         self.__index = index

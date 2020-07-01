@@ -55,11 +55,8 @@ def main():
     # Project a 3D point (0, 0, 1000.0) onto the image plane.
     # We use this to draw a line sticking out of the nose
     (nose_end_point2D, jacobian) = cv2.projectPoints(np.array([(0.0, 0.0, 1000.0)]), rotation_vector, translation_vector, camera_matrix, dist_coeffs)
-    
-    for p in X:
-        cv2.circle(frame, (p[0].astype(int), p[1].astype(int)), 3, (0,0,255), -1)
 
-    p1 = ( int(X[0][0]), int(X[0][1]))
+    p1 = (X[(0,0)[0],(1,1)[1]],X[(1,1)[0],(1,1)[1]])
     p2 = ( int(nose_end_point2D[0][0][0]), int(nose_end_point2D[0][0][1]))
     
     cv2.line(frame, p1, p2, (255,0,0), 2) 

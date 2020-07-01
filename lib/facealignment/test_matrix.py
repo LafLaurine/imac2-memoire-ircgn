@@ -48,6 +48,8 @@ def main():
     model = np.asmatrix(model_points)
 
     dist_coeffs = np.zeros((4,1)) # Assuming no lens distortion
+    ''' solvePnP implements several algorithms for pose estimation which can be selected using the parameter flag. 
+        By default it uses the flag SOLVEPNP_ITERATIVE which is essentially the DLT solution followed by Levenberg-Marquardt optimization.'''
     (success, rotation_vector, translation_vector) = cv2.solvePnP(model, X, camera_matrix, dist_coeffs, flags=cv2.SOLVEPNP_ITERATIVE)
     print ("Rotation Vector:\n {0}".format(rotation_vector))
     print ("Translation Vector:\n {0}".format(translation_vector))

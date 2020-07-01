@@ -4,8 +4,11 @@ import cv2
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import collections
+from numpy import *
 import numpy as np
 from math import cos, sin
+from rigid_transform_3D import rigid_transform_3D
+
 
 def parse_args():
     """Parse input arguments."""
@@ -41,7 +44,7 @@ def main():
         # Scaled the mean
         centered = scaled - np.mean(scaled, axis=0)
 
-        # Transform array of landmarks points to a matrice
+        # Transform array of landmarks points to matrixes
         X = np.asmatrix(imagePoints)
         y = np.asmatrix(imagePoints)
         # Get the number of column
@@ -59,19 +62,29 @@ def main():
         w = X_plus.dot(y)
         # Error of the least square solution
         error = np.linalg.norm(X.dot(w) - y, ord=2) ** 2
-        
-        # Construct a "rotation" matrix 
+
+        A = np.asmatrix(imagePoints)
+        B = np.asmatrix(imagePoints)
+        ret_R, ret_t = rigid_transform_3D(w,w)
+
+        print("Recovered rotation")
+        print(ret_R)
+        print("")
+
+        print("Recovered translation")
+        print(ret_t)
+        print("")
+
+        '''
+        # Construct a "rotation" matrix
         rotationMatrix = np.empty((3,3))
-        rotationMatrix[0,:] = (w[16] - w[0])/np.linalg.norm(w[16] - w[0])
-        rotationMatrix[1,:] = (w[8] - w[27])/np.linalg.norm(w[8] - w[27])
+        rotationMatrix[0,:] = (centered[16] - centered[0])/np.linalg.norm(centered[16] - centered[0])
+        rotationMatrix[1,:] = (centered[8] - centered[27])/np.linalg.norm(centered[8] - centered[27])
         rotationMatrix[2,:] = np.cross(rotationMatrix[0, :], rotationMatrix[1, :])
         invRot = np.linalg.inv(rotationMatrix)
 
-        # Object-space points, these are what you'd run OpenCV's solvePnP() with
+        # Object-space points
         objectPoints = centered.dot(invRot)
-        '''
-        solvePnP implements several algorithms for pose estimation which can be selected using the parameter flag. 
-        By default it uses the flag SOLVEPNP_ITERATIVE which is essentially the DLT solution followed by Levenberg-Marquardt optimization.
 
         # Draw the computed data
         for i, (imagePoint, objectPoint) in enumerate(zip(imagePoints, objectPoints)):

@@ -24,6 +24,11 @@ def rigid_transform_3D(A, B):
     centroid_A = mean(A, axis=1)
     centroid_B = mean(B, axis=1)
 
+    # ensure centroids are 3x1 (necessary when A or B are numpy arrays)
+    # instead of numpy matrices
+    centroid_A = centroid_A.reshape(-1, 1)
+    centroid_B = centroid_B.reshape(-1, 1)
+
     # subtract mean
     Am = A - tile(centroid_A, (1, num_cols))
     Bm = B - tile(centroid_B, (1, num_cols))
@@ -31,8 +36,8 @@ def rigid_transform_3D(A, B):
     H = Am * transpose(Bm)
 
     # sanity check
-    '''if linalg.matrix_rank(H) < 3:
-        raise ValueError("rank of H = {}, expecting 3".format(linalg.matrix_rank(H)))'''
+    if linalg.matrix_rank(H) < 3:
+        raise ValueError("rank of H = {}, expecting 3".format(linalg.matrix_rank(H)))
 
     # find rotation
     U, S, Vt = linalg.svd(H)

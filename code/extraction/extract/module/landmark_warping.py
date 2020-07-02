@@ -1,10 +1,8 @@
 import numpy as np
 import cv2
-
 from . import common_utils as ut
 from . import common_face as fc
 
-#For dlib’s 68-point facial landmark detector:
 class LandmarkFinder:
     jaw             = 'jaw'
     right_eyebrow   = 'right_eyebrow'
@@ -70,7 +68,6 @@ class LandmarkWarper:
         mat_warp = self.__get_transform_matrix(points_interest_face)
         # Finally we can compute the warped image
         image_warped = self.__warp_image(face.image(), mat_warp)
-
         w, h = self.dim_resize().tuple()
         box_face = ut.BoundingBox(0, 0, w, h)
         landmarks_warped = LandmarkWarper.__warp_landmarks(face.landmarks(), mat_warp)
@@ -82,16 +79,8 @@ class LandmarkWarper:
         the three points of interest are:
         the eyes and the mouth
         """
-        # first, we compute the positions of the three points of interest
-        points_interest_face = LandmarkWarper.__get_points_interest(face.landmarks())
-        # Then we get warp matrix from opencv FROM Face TO BASELINE
-        mat_warp = self.__get_transform_matrix(points_interest_face)
-        # Finally we can compute the warped image
-        image_warped = self.__warp_image(face.image(), mat_warp)
         w, h = self.dim_resize().tuple()
         box_face = ut.BoundingBox(0, 0, w, h)
-        landmarks_warped = LandmarkWarper.__warp_landmarks(face.landmarks(), mat_warp)
-        # Face is updated with warping
         # resize image
         output = box_face.crop_image(face.image())
         face.set_warped(box_face, output, face.landmarks())

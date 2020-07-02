@@ -61,7 +61,7 @@ def main():
     p1 = (X[(0,0)[0],(1,1)[1]],X[(1,1)[0],(1,1)[1]])
     p2 = ( int(nose_end_point2D[0][0][0]), int(nose_end_point2D[0][0][1]))
     
-    cv2.line(frame, p1, p2, (255,0,0), 2) 
+    cv2.line(frame, p1, p2, (0,0,255), 3) 
     # Display image
     cv2.imshow("Output", frame)
     cv2.waitKey(0)

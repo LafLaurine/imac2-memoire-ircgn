@@ -1,6 +1,8 @@
 from numpy import *
 from math import sqrt
 
+# FINDING OPTIMAL ROTATION AND TRANSLATION BETWEEN CORRESPONDING 3D POINTS
+
 # Input: expects 3xN matrix of points
 # Returns R,t
 # R = 3x3 rotation matrix

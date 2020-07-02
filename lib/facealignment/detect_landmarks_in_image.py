@@ -45,6 +45,7 @@ def main():
         centered = scaled - np.mean(scaled, axis=0)
 
         # Transform array of landmarks points to matrixes
+        '''
         X = np.asmatrix(imagePoints)
         y = np.asmatrix(imagePoints)
         # Get the number of column
@@ -77,34 +78,22 @@ def main():
 
         # Construct a "rotation" matrix
         rotationMatrix = np.empty((3,3))
+        # eye line
         rotationMatrix[0,:] = (centered[16] - centered[0])/np.linalg.norm(centered[16] - centered[0])
+        # nose line
         rotationMatrix[1,:] = (centered[8] - centered[27])/np.linalg.norm(centered[8] - centered[27])
+        # cross product of eye line and nose line in order to have projection axe
         rotationMatrix[2,:] = np.cross(rotationMatrix[0, :], rotationMatrix[1, :])
-        invRot = np.linalg.inv(rotationMatrix)
 
-        # Object-space points
-        objectPoints = centered.dot(invRot)
-
-        # Draw the computed data
-        for i, (imagePoint, objectPoint) in enumerate(zip(imagePoints, objectPoints)):
-            # Draw the Point Predictions
-            cv2.circle(frame, (imagePoint[0], imagePoint[1]), 3, (0,255,0))
-
-            # Draw the X Axis
-            cv2.line(frame, tuple(mean[:2].astype(int)), 
-                            tuple((mean+(rotationMatrix[0,:] * 100.0))[:2].astype(int)), (0, 0, 255), 3)
-            # Draw the Y Axis
-            cv2.line(frame, tuple(mean[:2].astype(int)), 
-                            tuple((mean-(rotationMatrix[1,:] * 100.0))[:2].astype(int)), (0, 255, 0), 3)
-            # Draw the Z Axis
-            cv2.line(frame, tuple(mean[:2].astype(int)), 
-                            tuple((mean+(rotationMatrix[2,:] * 100.0))[:2].astype(int)), (255, 0, 0), 3)
-            
-            # Draw the indices in Object Space
-            cv2.putText(canonical, str(i), 
-                        ((int)((objectPoint[0] * 1000.0) + 320.0), 
-                            (int)((objectPoint[1] * 1000.0) + 240.0)), 
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255, 255, 255), 1, cv2.LINE_AA)
+        # Draw the X Axis
+        cv2.line(frame, tuple(mean[:2].astype(int)), 
+                        tuple((mean+(rotationMatrix[0,:] * 100.0))[:2].astype(int)), (0, 0, 255), 3)
+        # Draw the Y Axis
+        cv2.line(frame, tuple(mean[:2].astype(int)), 
+                        tuple((mean-(rotationMatrix[1,:] * 100.0))[:2].astype(int)), (0, 255, 0), 3)
+        # Draw the Z Axis
+        cv2.line(frame, tuple(mean[:2].astype(int)), 
+                        tuple((mean+(rotationMatrix[2,:] * 100.0))[:2].astype(int)), (255, 0, 0), 3)
 
     pred_type = collections.namedtuple('prediction_type', ['slice', 'color'])
     pred_types = {'face': pred_type(slice(0, 17), (0.682, 0.780, 0.909, 0.5)),

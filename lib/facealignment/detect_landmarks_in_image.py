@@ -73,9 +73,8 @@ def main():
 
         print("Recovered translation")
         print(ret_t)
-        print("")
+        print("")'''
 
-        '''
         # Construct a "rotation" matrix
         rotationMatrix = np.empty((3,3))
         rotationMatrix[0,:] = (centered[16] - centered[0])/np.linalg.norm(centered[16] - centered[0])
@@ -146,7 +145,7 @@ def main():
 
     ax.view_init(elev=90., azim=90.)
     ax.set_xlim(ax.get_xlim()[::-1])
-    plt.show()'''
+    plt.show()
 
         
 if __name__ == '__main__':

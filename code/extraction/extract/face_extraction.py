@@ -72,28 +72,6 @@ Detection method can either of:
    'CSRT'
 """
 
-class LandmarkFinder:
-    jaw             = 'jaw'
-    right_eyebrow   = 'right_eyebrow'
-    left_eyebrow    = 'left_eyebrow'
-    nose            = 'nose'
-    right_eye       = 'right_eye'
-    left_eye        = 'left_eye'
-    mouth           = 'mouth'
-    @staticmethod
-    def get_landmarks_id(name_landmark):
-        switcher = {
-            LandmarkFinder.jaw             : (0, 17),
-            LandmarkFinder.right_eyebrow   : (17, 22),
-            LandmarkFinder.left_eyebrow    : (22, 27),
-            LandmarkFinder.nose            : (27, 36),
-            LandmarkFinder.right_eye       : (36, 42),
-            LandmarkFinder.left_eye        : (42, 48),
-            LandmarkFinder.mouth           : (48, 68)
-        }
-        return switcher.get(name_landmark, None)
-
-
 class FaceExtractor:
 
     # TODO: move dnn parameters to a config file

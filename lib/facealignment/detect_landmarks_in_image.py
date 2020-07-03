@@ -7,7 +7,9 @@ import collections
 from numpy import *
 import numpy as np
 from math import cos, sin
-from rigid_transform_3D import rigid_transform_3D
+import sys
+sys.path.append('../../')
+from src.rigid_transform_3D import rigid_transform_3D
 
 
 def parse_args():
@@ -45,7 +47,6 @@ def main():
         centered = scaled - np.mean(scaled, axis=0)
 
         # Transform array of landmarks points to matrixes
-        '''
         X = np.asmatrix(imagePoints)
         y = np.asmatrix(imagePoints)
         # Get the number of column
@@ -64,7 +65,7 @@ def main():
         # Error of the least square solution
         error = np.linalg.norm(X.dot(w) - y, ord=2) ** 2
 
-        A = np.asmatrix(imagePoints)
+        '''A = np.asmatrix(imagePoints)
         B = np.asmatrix(imagePoints)
         ret_R, ret_t = rigid_transform_3D(w,w)
 
@@ -139,6 +140,6 @@ def main():
         
 if __name__ == '__main__':
     args = parse_args()
-    image_path = args.image_path
+    image_path = "../../"+args.image_path
     main()
     cv2.destroyAllWindows()

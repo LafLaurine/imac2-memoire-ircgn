@@ -49,7 +49,7 @@ def main():
     class_names = ['Angry', 'Disgust', 'Fear', 'Happy', 'Sad', 'Surprise', 'Neutral']
 
     net = VGG('VGG19')
-    checkpoint = torch.load(os.path.join('FER2013_VGG19', 'PrivateTest_model.t7'))
+    checkpoint = torch.load(os.path.join('../../models/FacialExpressionRecognition/FER2013_VGG19', 'PrivateTest_model.t7'))
     net.load_state_dict(checkpoint['net'])
     net.cuda()
     net.eval()
@@ -58,12 +58,12 @@ def main():
 
     inputs = inputs.view(-1, c, h, w)
     inputs = inputs.cuda()
-    inputs = Variable(inputs, volatile=True)
+    inputs = Variable(inputs)
     outputs = net(inputs)
 
     outputs_avg = outputs.view(ncrops, -1).mean(0)  # avg over crops
 
-    score = F.softmax(outputs_avg)
+    score = F.softmax(outputs_avg,dim=0)
     _, predicted = torch.max(outputs_avg.data, 0)
 
     plt.rcParams['figure.figsize'] = (13.5,5.5)
@@ -94,6 +94,6 @@ def main():
 
 if __name__ == '__main__':
     args = parse_args()
-    image_path = args.image_path
+    image_path = "../../"+args.image_path
     output_path = args.output_path
     main()

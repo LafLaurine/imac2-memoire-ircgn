@@ -22,8 +22,6 @@ def main():
     frame =  cv2.imread(image_path)
 
     preds = fa.get_landmarks(frame)[-1]
-    # Clear the indices frame : create an array filled with zero, with the size of frame
-    canonical = np.zeros(frame.shape)
     # Get landmarks of the input image
     imagePoints = fa.get_landmarks_from_image(frame)
 

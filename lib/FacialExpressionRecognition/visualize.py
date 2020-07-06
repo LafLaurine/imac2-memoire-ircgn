@@ -6,11 +6,10 @@ import argparse
 import torch.nn as nn
 import torch.nn.functional as F
 import os
+import cv2
 from torch.autograd import Variable
 
 import transforms as transforms
-from skimage import io
-from skimage.transform import resize
 
 import sys
 sys.path.append('../../')
@@ -36,9 +35,9 @@ def rgb2gray(rgb):
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 
 def main():
-    raw_img = io.imread(image_path)
+    raw_img = cv2.imread(image_path)
     gray = rgb2gray(raw_img)
-    gray = resize(gray, (48,48), mode='symmetric').astype(np.uint8)
+    gray = cv2.resize(gray, (48,48)).astype(np.uint8)
 
     img = gray[:, :, np.newaxis]
 

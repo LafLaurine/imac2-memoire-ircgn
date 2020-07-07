@@ -35,7 +35,7 @@ def rgb2gray(rgb):
     return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 
 def main():
-    raw_img = cv2.imread(image_path)
+    raw_img = cv2.imread(image_path)[...,::-1]
     gray = rgb2gray(raw_img)
     gray = cv2.resize(gray, (48,48)).astype(np.uint8)
 

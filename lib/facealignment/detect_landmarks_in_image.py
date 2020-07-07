@@ -34,9 +34,15 @@ def main():
     # Get landmarks of the input image
     imagePoints = fa.get_landmarks_from_image(frame)
 
+    #row to delete
+    listofrowtodelete = np.array([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20,21,22,23,24,25,26,31,32,33,34,35,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69])
+    imagePoints[0] = np.delete(imagePoints[0],listofrowtodelete,0)
     # We need to find matrice for mean landmarks
-    A = loadtxt('data.csv', delimiter=',')
+    A = np.asmatrix(loadtxt('data.csv', delimiter=','))
     B = np.asmatrix(imagePoints[0])
+    print(B)
+
+    
     
     if(imagePoints is not None):
         # Get the array
@@ -48,15 +54,7 @@ def main():
             cv2.circle(frame, (imagePoint[0], imagePoint[1]), 3, (0,255,0))
 
     pred_type = collections.namedtuple('prediction_type', ['slice', 'color'])
-    pred_types = {'face': pred_type(slice(0, 17), (0.682, 0.780, 0.909, 0.5)),
-                'eyebrow1': pred_type(slice(17, 22), (1.0, 0.498, 0.055, 0.4)),
-                'eyebrow2': pred_type(slice(22, 27), (1.0, 0.498, 0.055, 0.4)),
-                'nose': pred_type(slice(27, 31), (0.345, 0.239, 0.443, 0.4)),
-                'nostril': pred_type(slice(31, 36), (0.345, 0.239, 0.443, 0.4)),
-                'eye1': pred_type(slice(36, 42), (0.596, 0.875, 0.541, 0.3)),
-                'eye2': pred_type(slice(42, 48), (0.596, 0.875, 0.541, 0.3)),
-                'lips': pred_type(slice(48, 60), (0.596, 0.875, 0.541, 0.3)),
-                'teeth': pred_type(slice(60, 68), (0.596, 0.875, 0.541, 0.4))
+    pred_types = {'face': pred_type(slice(0, 15), (0.682, 0.780, 0.909, 0.5)),
                 }
     fig = plt.figure(figsize=plt.figaspect(.5))
     ax = fig.add_subplot(1, 2, 1)

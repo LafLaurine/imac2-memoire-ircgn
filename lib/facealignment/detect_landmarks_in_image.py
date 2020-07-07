@@ -43,7 +43,10 @@ def main():
     B = np.asmatrix((imagePoints[0]))
     # trans = np.dot(np.linalg.inv(A),B)
     
-    
+    columnofones = np.ones((18,1), dtype=int64)
+    A = np.append(A,columnofones,1)
+    print(A)
+
     if(imagePoints is not None):
         # Get the array
         imagePoints = imagePoints[0]

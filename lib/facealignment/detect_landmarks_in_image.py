@@ -7,6 +7,9 @@ import collections
 from numpy import *
 import numpy as np
 from math import cos, sin
+# save numpy array as csv file
+from numpy import asarray
+from numpy import savetxt
 
 def parse_args():
     """Parse input arguments."""
@@ -30,6 +33,10 @@ def main():
 
     # Get landmarks of the input image
     imagePoints = fa.get_landmarks_from_image(frame)
+
+    # We need to find matrice for mean landmarks
+    A = loadtxt('data.csv', delimiter=',')
+    B = np.asmatrix(imagePoints[0])
     
     if(imagePoints is not None):
         # Get the array

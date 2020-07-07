@@ -7,8 +7,6 @@ import collections
 from numpy import *
 import numpy as np
 from math import cos, sin
-import sys
-sys.path.append('../../')
 
 def parse_args():
     """Parse input arguments."""
@@ -16,35 +14,31 @@ def parse_args():
     parser.add_argument('--image', dest='image_path', help='Path of image')
     args = parser.parse_args()
     return args
-    
 
 def main():
-    # Run the 3D face alignment with CPU on a test image : change cpu to cuda.
+    # Run the 3D face alignment with CPU on a test image : change cpu to cuda
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cpu', flip_input=False, face_detector='sfd')
 
-    frame = cv2.imread(image_path)[...,::-1]
+    frame = cv2.imread(image_path)
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
     
-    # Get landmarks of the input image
-    imagePoints = fa.get_landmarks_from_image(frame)
-
     # 2D-Plot
     plot_style = dict(marker='o',
                     markersize=4,
                     linestyle='-',
                     lw=2)
 
+    # Get landmarks of the input image
+    imagePoints = fa.get_landmarks_from_image(frame)
+    
     if(imagePoints is not None):
         # Get the array
         imagePoints = imagePoints[0]
 
-        '''# Transform array of landmarks points to matrixes
-        X = np.asmatrix(imagePoints)
-        y = np.asmatrix(imagePoints)
-
-        # Search for affine matrix
-
-        # Least square'''
-        
+        # Draw the computed data
+        for imagePoint in imagePoints:
+            # Draw the Point Predictions
+            cv2.circle(frame, (imagePoint[0], imagePoint[1]), 3, (0,255,0))
 
     pred_type = collections.namedtuple('prediction_type', ['slice', 'color'])
     pred_types = {'face': pred_type(slice(0, 17), (0.682, 0.780, 0.909, 0.5)),
@@ -57,7 +51,6 @@ def main():
                 'lips': pred_type(slice(48, 60), (0.596, 0.875, 0.541, 0.3)),
                 'teeth': pred_type(slice(60, 68), (0.596, 0.875, 0.541, 0.4))
                 }
-
     fig = plt.figure(figsize=plt.figaspect(.5))
     ax = fig.add_subplot(1, 2, 1)
     ax.imshow(frame)

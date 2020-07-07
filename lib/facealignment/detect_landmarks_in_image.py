@@ -44,6 +44,7 @@ def main():
     # trans = np.dot(np.linalg.inv(A),B)
     
     columnofones = np.ones((18,1), dtype=int64)
+    rowtoaddtoM = [0,0,0,1]
     A = np.append(A,columnofones,1)
 
     vector_xp = B[:,0]
@@ -51,8 +52,19 @@ def main():
     vector_zp = B[:,2]
 
     M1 = np.linalg.pinv(A).dot(vector_xp)
-    print(M1)
-
+    M2 = np.linalg.pinv(A).dot(vector_yp)
+    M3 = np.linalg.pinv(A).dot(vector_zp)
+    M = np.zeros((4,4))
+    M[0,:] = M1.transpose()
+    M[1,:] = M2.transpose()
+    M[2,:] = M3.transpose()
+    M[3,:] = rowtoaddtoM
+    N = np.delete(M,3,0)
+    N = np.delete(N,3,1)
+    print(N)
+    Q, R = np.linalg.qr(N)
+    print(Q)
+    print(R)
 
     if(imagePoints is not None):
         # Get the array

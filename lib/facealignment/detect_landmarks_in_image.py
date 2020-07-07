@@ -45,7 +45,14 @@ def main():
     
     columnofones = np.ones((18,1), dtype=int64)
     A = np.append(A,columnofones,1)
-    print(A)
+
+    vector_xp = B[:,0]
+    vector_yp = B[:,1]
+    vector_zp = B[:,2]
+
+    M1 = np.linalg.pinv(A).dot(vector_xp)
+    print(M1)
+
 
     if(imagePoints is not None):
         # Get the array

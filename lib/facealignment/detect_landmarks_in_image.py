@@ -6,7 +6,10 @@ from mpl_toolkits.mplot3d import Axes3D
 import collections
 from numpy import *
 import numpy as np
-from get_rotation_matrix import get_rotation_matrix
+
+import sys
+sys.path.append('../../')
+from src.get_rotation_matrix import get_rotation_matrix
 
 def parse_args():
     """Parse input arguments."""

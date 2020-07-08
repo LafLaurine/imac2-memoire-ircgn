@@ -14,7 +14,7 @@ def get_rotation_matrix(imagePoints):
     print(landmarks_eye1)
     imagePoints[0] = np.append(imagePoints[0] ,[landmarks_eye1],0)
     imagePoints[0] = np.append(imagePoints[0] ,[landmarks_eye2],0)
-    savetxt('data.csv', imagePoints[0], delimiter=',')
+    #savetxt('data.csv', imagePoints[0], delimiter=',')
     print(imagePoints[0])
 
     A = np.asmatrix(loadtxt('data.csv', delimiter=','))

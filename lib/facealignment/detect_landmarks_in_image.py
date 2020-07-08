@@ -35,16 +35,16 @@ def main():
     imagePoints = fa.get_landmarks_from_image(frame)
 
     if(imagePoints is not None):
+        # get the rotation matrix
         Q = get_rotation_matrix(imagePoints)
-        #get rotation from rotation matrix
+        # get rotation from rotation matrix
         (theta, phi, psi) = rotationMatrixToEulerAngles(Q) * 180 / np.pi
         print(theta,phi,psi)
-        # Get the array
-        imagePoints = imagePoints[0]        
-        # we have the rotation matrix
         x_axis = Q[:,0]
         y_axis = Q[:,1]
         z_axis = Q[:,2]
+
+        imagePoints = imagePoints[0]        
 
         # Compute the Mean-Centered-Scaled Points
         mean = np.mean(imagePoints, axis=0)

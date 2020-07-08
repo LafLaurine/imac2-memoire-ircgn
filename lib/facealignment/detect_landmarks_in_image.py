@@ -101,11 +101,16 @@ def main():
                         tuple((mean+(z_axis * 100.0))[:2].astype(int)), (255, 0, 0), 3)
 
     pred_type = collections.namedtuple('prediction_type', ['slice', 'color'])
-    pred_types = {'face': pred_type(slice(0, 15), (0.682, 0.780, 0.909, 0.5))}
+    pred_types = {'nose': pred_type(slice(26, 31), (0.345, 0.239, 0.443, 0.4)),
+                'eye1': pred_type(slice(36, 42), (0.596, 0.875, 0.541, 0.3)),
+                'eye2': pred_type(slice(42, 48), (0.596, 0.875, 0.541, 0.3))
+                }    
+
     fig = plt.figure(figsize=plt.figaspect(.5))
     ax = fig.add_subplot(1, 2, 1)
     ax.imshow(frame)
 
+    # that's the part where we draw lines
     for pred_type in pred_types.values():
         ax.plot(imagePoints[pred_type.slice, 0],
                 imagePoints[pred_type.slice, 1],

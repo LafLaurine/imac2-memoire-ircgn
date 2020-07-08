@@ -10,6 +10,8 @@ import numpy as np
 import sys
 sys.path.append('../../')
 from src.get_rotation_matrix import get_rotation_matrix
+from src.get_rotation_matrix import rotationMatrixToEulerAngles
+from src.get_rotation_matrix import isRotationMatrix
 
 def parse_args():
     """Parse input arguments."""
@@ -37,6 +39,9 @@ def main():
 
     if(imagePoints is not None):
         Q = get_rotation_matrix(imagePoints)
+        #get rotation from rotation matrix
+        (theta, phi, psi) = rotationMatrixToEulerAngles(Q)
+        print(theta,phi,psi)
         # Get the array
         imagePoints = imagePoints[0]        
         # we have the rotation matrix

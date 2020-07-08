@@ -37,7 +37,7 @@ def main():
     if(imagePoints is not None):
         Q = get_rotation_matrix(imagePoints)
         #get rotation from rotation matrix
-        (theta, phi, psi) = rotationMatrixToEulerAngles(Q)
+        (theta, phi, psi) = rotationMatrixToEulerAngles(Q) * 180 / np.pi
         print(theta,phi,psi)
         # Get the array
         imagePoints = imagePoints[0]        

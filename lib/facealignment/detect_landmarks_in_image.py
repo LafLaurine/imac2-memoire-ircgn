@@ -9,9 +9,7 @@ import numpy as np
 
 import sys
 sys.path.append('../../')
-from src.get_rotation_matrix import get_rotation_matrix
-from src.get_rotation_matrix import rotationMatrixToEulerAngles
-from src.get_rotation_matrix import isRotationMatrix
+from src.get_rotation_matrix import *
 
 def parse_args():
     """Parse input arguments."""
@@ -19,7 +17,6 @@ def parse_args():
     parser.add_argument('--image', dest='image_path', help='Path of image')
     args = parser.parse_args()
     return args
-
 
 def main():
     # Run the 3D face alignment with CPU on a test image : change cpu to cuda

@@ -35,19 +35,9 @@ def get_rotation_matrix(imagePoints):
     M[2,:] = M3.transpose()
     M[3,:] = rowtoaddtoM
     
-    #test with estimateAffine3D
-    src_point = loadtxt('data.csv', delimiter=',')
-    dst_point = imagePoints[0] 
-    (retval ,E,inliers)= cv2.estimateAffine3D(src_point,dst_point)
-    E = np.delete(E,3,1)
-    print("with estimateAffine3D" , E)
     # we extract matrix N
     N = np.delete(M,3,0)
     N = np.delete(N,3,1)
-    print("with our method" ,N)
-
-    print("the difference" , E-N)
-    
     # QR decomposition
     Q, R = np.linalg.qr(N)
     print(Q)

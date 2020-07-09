@@ -94,7 +94,6 @@ def main():
         ax.plot3D(imagePoints[pred_type.slice, 0] * 1.2,
                 imagePoints[pred_type.slice, 1],
                 imagePoints[pred_type.slice, 2], color='blue')'''
-
     ax.view_init(elev=90., azim=90.)
     ax.set_xlim(ax.get_xlim()[::-1])
     plt.show()

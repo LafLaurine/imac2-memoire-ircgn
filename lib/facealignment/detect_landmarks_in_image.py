@@ -18,40 +18,24 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def main():
-    # Run the 3D face alignment with CPU on a test image : change cpu to cuda
-    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cpu', flip_input=False, face_detector='sfd')
-
-    frame = cv2.imread(image_path)
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    
+def draw(frame, imagePoints):
     # 2D-Plot
     plot_style = dict(marker='o',
                     markersize=4,
                     linestyle='-',
                     lw=2)
 
-    # Get landmarks of the input image
-    imagePoints = fa.get_landmarks_from_image(frame)
-
     if(imagePoints is not None):
-        # get the rotation matrix
         Q = get_rotation_matrix(imagePoints)
-        # get rotation from rotation matrix
-        (theta, phi, psi) = rotationMatrixToEulerAngles(Q) * 180 / np.pi
-        print(theta,phi,psi)
         x_axis = Q[:,0]
         y_axis = Q[:,1]
         z_axis = Q[:,2]
-
         imagePoints = imagePoints[0]        
-
-        # Compute the Mean-Centered-Scaled Points
+        # compute the Mean-Centered-Scaled Points
         mean = np.mean(imagePoints, axis=0)
-
-        # Draw the computed data
+        # draw the computed data
         for imagePoint in imagePoints:
-            # Draw the Point Predictions
+            # draw the Point Predictions
             cv2.circle(frame, (imagePoint[0], imagePoint[1]), 3, (0,255,0))
 
     # x_axis
@@ -98,7 +82,19 @@ def main():
     ax.view_init(elev=90., azim=90.)
     ax.set_xlim(ax.get_xlim()[::-1])
     plt.show()
-        
+
+
+def main():
+    # Run the 3D face alignment with CPU on a test image : change cpu to cuda
+    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cpu', flip_input=False, face_detector='sfd')
+
+    frame = cv2.imread(image_path)
+    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+
+    # Get landmarks of the input image
+    imagePoints = fa.get_landmarks_from_image(frame)
+    draw(frame,imagePoints)
+
 if __name__ == '__main__':
     args = parse_args()
     image_path = "../../"+args.image_path

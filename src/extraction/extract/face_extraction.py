@@ -13,13 +13,13 @@ from .module import landmark_warping as lndm
 DIM_RESIZE = (256, 256)
 
 ## Face detection model
-dir_model_face_default = "face_model"
+dir_model_face_default = "../../../models/face_model"
 name_config_model_face_default   = "deploy.prototxt.txt"
 name_model_face_default          = "res10_300x300_ssd_iter_140000.caffemodel"
 size_net_default                 = 300
 mean_net_default                 = (104.0, 177.0, 123.0)
 ## Feature warping model
-dir_model_landmark_default       = "landmark_model"
+dir_model_landmark_default       = "../../../models/landmark_model"
 name_model_landmark_default      = "lbfmodel.yaml"
 name_model_landmark_alt_default  = "shape_predictor_68_face_landmarks.dat"
 

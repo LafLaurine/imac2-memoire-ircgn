@@ -11,6 +11,8 @@ import sys
 sys.path.append('../../')
 from src.get_rotation_matrix import *
 
+## Get arguments from user
+#
 def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='Detecting landmarks')

@@ -2,12 +2,17 @@ from numpy import *
 import numpy as np
 import cv2
 
+## @package get_rotation_matrix
+#  Documentation for get_rotation_matrix
+
+## Get rotation matrix
+#  Allow us to retrieve rotation matrix from affine transformation
 def get_rotation_matrix(imagePoints):
     
     key_landmarks_eye1 = np.mean((imagePoints[0][36],imagePoints[0][37],imagePoints[0][38],imagePoints[0][39],imagePoints[0][40],imagePoints[0][41]),axis = 0)
     key_landmarks_eye2 = np.mean((imagePoints[0][42],imagePoints[0][43],imagePoints[0][44],imagePoints[0][45],imagePoints[0][46],imagePoints[0][47]),axis = 0)
     key_landmarks_mouth = np.mean((imagePoints[0][60],imagePoints[0][61],imagePoints[0][62],imagePoints[0][63],imagePoints[0][64],imagePoints[0][65],imagePoints[0][66],imagePoints[0][67]),axis = 0)
-    # row to delete
+    ## row to delete
     listofrowtodelete = np.array([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20,21,22,23,24,25,26,31,32,33,34,35,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69])
     imagePoints[0] = np.delete(imagePoints[0],listofrowtodelete,0)
     
@@ -59,7 +64,7 @@ def get_rotation_matrix(imagePoints):
     print(theta,phi,psi)
     return Q
 
-# checks if a matrix is a valid rotation matrix.
+## Check if a matrix is a valid rotation matrix
 def isRotationMatrix(R) :
     Rt = np.transpose(R)
     shouldBeIdentity = np.dot(Rt, R)
@@ -67,8 +72,7 @@ def isRotationMatrix(R) :
     n = np.linalg.norm(I - shouldBeIdentity)
     return n < 1e-6
 
-# Calculates rotation matrix to euler angles
-# of the euler angles ( x and z are swapped )
+## Calculates rotation matrix to euler angles
 def rotationMatrixToEulerAngles(R) :
     assert(isRotationMatrix(R))
     sy = math.sqrt(R[0,0] * R[0,0] +  R[1,0] * R[1,0])

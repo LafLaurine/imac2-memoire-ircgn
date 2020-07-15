@@ -46,6 +46,12 @@ def get_rotation_matrix(imagePoints):
     # we extract matrix N
     N = np.delete(M,3,0)
     N = np.delete(N,3,1)
+
+    #verif with cv2
+    #pts1 = np.asmatrix(loadtxt('data.csv', delimiter=','))
+    #pts2 = np.asmatrix(imagePoints[0])
+    #Np = cv2.getAffineTransform(pts1,pts2)
+    #print(Np)
     # QR decomposition
     Q, R = np.linalg.qr(N)
     print(N)

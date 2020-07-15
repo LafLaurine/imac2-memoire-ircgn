@@ -29,10 +29,13 @@ def draw(frame, imagePoints):
                     lw=2)
 
     if(imagePoints is not None):
-        #N,Q,R = get_affine_matrix_keylandmarks(imagePoints
+        #N,Q,R = get_affine_matrix_keylandmarks(imagePoints)
+        perspective_trans(imagePoints,frame)
         N,Q,R = get_rotation_matrix(imagePoints)
         #affine_trans_image(N,frame)
-        affine_trans_2(N,frame)
+        #affine_trans_2(N,frame)
+        #affine_trans_3(N,Q,R,frame)
+
         x_axis = Q[:,0]
         y_axis = Q[:,1]
         z_axis = Q[:,2]

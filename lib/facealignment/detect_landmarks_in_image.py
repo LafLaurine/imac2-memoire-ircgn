@@ -10,6 +10,7 @@ import numpy as np
 import sys
 sys.path.append('../../')
 from src.get_rotation_matrix import *
+from src.transform_image_2 import *
 
 ## Get arguments from user
 #
@@ -28,7 +29,10 @@ def draw(frame, imagePoints):
                     lw=2)
 
     if(imagePoints is not None):
-        Q = get_rotation_matrix(imagePoints)
+        #N,Q,R = get_affine_matrix_keylandmarks(imagePoints
+        N,Q,R = get_rotation_matrix(imagePoints)
+        #affine_trans_image(N,frame)
+        affine_trans_2(N,frame)
         x_axis = Q[:,0]
         y_axis = Q[:,1]
         z_axis = Q[:,2]
@@ -40,6 +44,7 @@ def draw(frame, imagePoints):
             # draw the Point Predictions
             cv2.circle(frame, (imagePoint[0], imagePoint[1]), 3, (0,255,0))
 
+            
     # x_axis
     cv2.line(frame, tuple(mean[:2].astype(int)), 
                         tuple((mean+(x_axis * 100.0))[:2].astype(int)), (0, 0, 255), 3)
@@ -89,13 +94,14 @@ def main():
     # Run the 3D face alignment with CPU on a test image : change cpu to cuda
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cpu', flip_input=False, face_detector='sfd')
 
-    frame = cv2.imread(image_path)
+    frame = cv2.imread(image_path,1)
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     # Get landmarks of the input image
     imagePoints = fa.get_landmarks_from_image(frame)
     draw(frame,imagePoints)
-
+    #create a new image
+    
 if __name__ == '__main__':
     args = parse_args()
     image_path = "../../"+args.image_path

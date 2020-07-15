@@ -9,21 +9,12 @@ import cv2
 #  Allow us to retrieve rotation matrix from affine transformation
 def get_rotation_matrix(imagePoints):
     
-    key_landmarks_eye1 = np.mean((imagePoints[0][36],imagePoints[0][37],imagePoints[0][38],imagePoints[0][39],imagePoints[0][40],imagePoints[0][41]),axis = 0)
-    key_landmarks_eye2 = np.mean((imagePoints[0][42],imagePoints[0][43],imagePoints[0][44],imagePoints[0][45],imagePoints[0][46],imagePoints[0][47]),axis = 0)
-    key_landmarks_mouth = np.mean((imagePoints[0][60],imagePoints[0][61],imagePoints[0][62],imagePoints[0][63],imagePoints[0][64],imagePoints[0][65],imagePoints[0][66],imagePoints[0][67]),axis = 0)
+    
     ## row to delete
     listofrowtodelete = np.array([1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,17,18,19,20,21,22,23,24,25,26,31,32,33,34,35,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69])
     imagePoints[0] = np.delete(imagePoints[0],listofrowtodelete,0)
     
-    key_landmarks = np.zeros((3,3))   
-    key_landmarks[0,:] = key_landmarks_eye1 
-    key_landmarks[1,:] = key_landmarks_eye2 
-    key_landmarks[2,:] = key_landmarks_mouth 
-
-    print(key_landmarks)
     #savetxt('data.csv', imagePoints[0], delimiter=',')
-    #savetxt('key_landmarks.csv',key_landmarks, delimiter=',')
     
     A = np.asmatrix(loadtxt('data.csv', delimiter=','))
     B = np.asmatrix((imagePoints[0]))
@@ -57,12 +48,13 @@ def get_rotation_matrix(imagePoints):
     N = np.delete(N,3,1)
     # QR decomposition
     Q, R = np.linalg.qr(N)
+    print(N)
     print(Q)
     print(R)
     # get rotation from rotation matrix
     (theta, phi, psi) = rotationMatrixToEulerAngles(Q) * 180 / np.pi
     print(theta,phi,psi)
-    return Q
+    return N,Q,R
 
 ## Check if a matrix is a valid rotation matrix
 def isRotationMatrix(R) :

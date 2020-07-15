@@ -1,39 +1,41 @@
-from skimage import data, transform
+import cv2
+import math
+from numpy import *
 import numpy as np
 import matplotlib.pyplot as plt
+from skimage import data
+from skimage import transform
+from skimage import img_as_float
+from scipy import ndimage, misc
 
-img = data.camera()
+from src.get_rotation_matrix import *
 
-theta = np.deg2rad(10)
-tx = 0
-ty = 0
+def perspective_trans(imagePoints,frame):
+    rows,cols,ch = frame.shape
 
-S, C = np.sin(theta), np.cos(theta)
+    key_landmarks_eye1 = np.mean((imagePoints[0][36],imagePoints[0][37],imagePoints[0][38],imagePoints[0][39],imagePoints[0][40],imagePoints[0][41]),axis = 0)
+    key_landmarks_eye2 = np.mean((imagePoints[0][42],imagePoints[0][43],imagePoints[0][44],imagePoints[0][45],imagePoints[0][46],imagePoints[0][47]),axis = 0)
+    key_landmarks_mouth = np.mean((imagePoints[0][60],imagePoints[0][61],imagePoints[0][62],imagePoints[0][63],imagePoints[0][64],imagePoints[0][65],imagePoints[0][66],imagePoints[0][67]),axis = 0)
+    #key_landmarks_nose = imagePoints[0][33]
+    
+    # creation of keylandmarks
+    key_landmarks = np.zeros((3,3))   
+    key_landmarks[0,:] = key_landmarks_eye1 
+    key_landmarks[1,:] = key_landmarks_eye2 
+    key_landmarks[2,:] = key_landmarks_mouth
+    #key_landmarks[3,:] = key_landmarks_nose
+    K = np.delete(key_landmarks,2,1)
+    print(K)
+    #savetxt('key_landmarks.csv',K, delimiter=',')
 
-# Rotation matrix, angle theta, translation tx, ty
-H = np.array([[C, -S, tx],
-              [S,  C, ty],
-              [0,  0, 1]])
+    pts1 = np.float32(loadtxt('key_landmarks.csv', delimiter=','))
+    pts2 = np.float32(K)
 
-# Translation matrix to shift the image center to the origin
-r, c = img.shape
-T = np.array([[1, 0, -c / 2.],
-              [0, 1, -r / 2.],
-              [0, 0, 1]])
+    M = cv2.getAffineTransform(pts1,pts2)
+    print(M)
+    iM = cv2.invertAffineTransform(M)
+    dst = cv2.warpAffine(frame,iM,(224,225))
 
-# Skew, for perspective
-S = np.array([[1, 0, 0],
-              [0, 1.3, 0],
-              [0, 1e-3, 1]])
-
-img_rot = transform.homography(img, H)
-img_rot_center_skew = transform.homography(img, S.dot(np.linalg.inv(T).dot(H).dot(T)))
-
-f, (ax0, ax1, ax2) = plt.subplots(1, 3)
-ax0.imshow(img, cmap=plt.cm.gray, interpolation='nearest')
-ax1.imshow(img_rot, cmap=plt.cm.gray, interpolation='nearest')
-ax2.imshow(img_rot_center_skew, cmap=plt.cm.gray, interpolation='nearest')
-plt.show()
-
-
-
+    plt.subplot(121),plt.imshow(frame),plt.title('Input')
+    plt.subplot(122),plt.imshow(dst),plt.title('Output')
+    plt.show()

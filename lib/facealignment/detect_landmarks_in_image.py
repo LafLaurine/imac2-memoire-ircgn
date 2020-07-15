@@ -10,7 +10,8 @@ import numpy as np
 import sys
 sys.path.append('../../')
 from src.get_rotation_matrix import *
-from src.transform_image_2 import *
+from src.transform_image import *
+from src.lips import *
 
 ## Get arguments from user
 #
@@ -31,7 +32,10 @@ def draw(frame, imagePoints):
     if(imagePoints is not None):
         #N,Q,R = get_affine_matrix_keylandmarks(imagePoints)
         perspective_trans(imagePoints,frame)
+        distancelips = get_distance_lips(imagePoints,frame)
+        print('distance lips = ' ,distancelips)
         N,Q,R = get_rotation_matrix(imagePoints)
+        
         #affine_trans_image(N,frame)
         #affine_trans_2(N,frame)
         #affine_trans_3(N,Q,R,frame)

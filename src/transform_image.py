@@ -34,7 +34,7 @@ def perspective_trans(imagePoints,frame):
     M = cv2.getAffineTransform(pts1,pts2)
     print(M)
     iM = cv2.invertAffineTransform(M)
-    dst = cv2.warpAffine(frame,iM,(224,225))
+    dst = cv2.warpAffine(frame,iM,(1024,1024))
 
     plt.subplot(121),plt.imshow(frame),plt.title('Input')
     plt.subplot(122),plt.imshow(dst),plt.title('Output')

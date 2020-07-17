@@ -1,4 +1,5 @@
 import cv2
+import os
 import math
 from numpy import *
 import numpy as np
@@ -39,3 +40,9 @@ def perspective_trans(imagePoints,frame):
     plt.subplot(121),plt.imshow(frame),plt.title('Input')
     plt.subplot(122),plt.imshow(dst),plt.title('Output')
     plt.show()
+
+    directory = '../../dataset/standardize_pic'
+    os.chdir(directory) 
+    cv2.imwrite('standardize.png',cv2.cvtColor(dst, cv2.COLOR_RGB2BGR))
+    directory = '../../lib/facealignment'
+    os.chdir(directory) 

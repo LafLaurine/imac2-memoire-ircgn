@@ -32,7 +32,7 @@ def draw(frame, imagePoints):
     if(imagePoints is not None):
         #N,Q,R = get_affine_matrix_keylandmarks(imagePoints)
         perspective_trans(imagePoints,frame)
-        distancelips = get_distance_lips(imagePoints,frame)
+        distancelips = get_distance_lips()
         print('distance lips = ' ,distancelips)
         N,Q,R = get_rotation_matrix(imagePoints)
         

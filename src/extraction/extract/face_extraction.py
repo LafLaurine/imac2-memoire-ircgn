@@ -10,7 +10,7 @@ from .module import landmark_warping as lndm
 
 ## MOST IMPORTANT; dimensions of the ouput
 ## Needs to correspond to input for classifiers
-DIM_RESIZE = (256, 256)
+DIM_RESIZE = (512, 512)
 
 ## Face detection model
 dir_model_face_default = "../../../models/face_model"

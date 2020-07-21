@@ -1,9 +1,7 @@
 import numpy as np
 import cv2 #REQUIRES OpenCV 3
-
 from . import common_utils as ut
 from . import common_tracking as trck
-
 
 class Face:
     # __box_original                   : Bounding box object of the face in original image
@@ -12,7 +10,7 @@ class Face:
     # __is_warped
     # __box_warped
     # __frame_warped
-    # __landmarks_warped           : array of features added before warping
+    # __landmarks_warped : array of features added before warping
     __RADIUS_LANDMARK = 2
     __THICKNESS_LANDMARK = 3
     __COLOUR_LANDMARK = (0, 255, 0)
@@ -43,21 +41,26 @@ class Face:
     def box(self):
         box = self.__box_original if not self.__is_warped else self.__box_warped
         return box
+        
     def rectangle(self):
         return ut.Rectangle.from_box(self.box())
+
     def frame(self):
         frame = self.__frame_original if not self.__is_warped else self.__frame_warped
         return frame
+
     def index_frame(self):
         return self.frame().index()
     def image(self):
         return self.frame().image()
+
     def landmarks(self):
         landmarks = self.__landmarks_original if not self.__is_warped else self.__landmarks_warped
         return landmarks
 
     def set_image(self, image):
         self.__frame = ut.Frame(image, self.index_frame(), to_search=True)
+
     def set_box(self, box):
         self.__box = box
 
@@ -69,8 +72,10 @@ class Face:
 
     def __set_image_warped(self, image_warped):
         self.__frame_warped = ut.Frame(image_warped, self.index_frame(), to_search=True)
+
     def __set_box_warped(self, box_warped):
         self.__box_warped = box_warped
+
     def set_landmarks_original(self, landmarks_original):
         self.__landmarks_original = np.array(landmarks_original)
 
@@ -89,12 +94,11 @@ class Face:
     def write_to_frame(self, frame, are_landmarks_saved=False, is_rectangle_saved=False):
         self.__write_to_image(frame.image(), are_landmarks_saved, is_rectangle_saved)
 
-
     def __write_to_image(self, image, are_landmarks_saved, is_rectangle_saved):
         if (self.landmarks() is not None) and are_landmarks_saved:
             self.__write_landmarks_to_image(image)
         if is_rectangle_saved:
-            self.__write_box_to_image(image)
+            self.write_box_to_image(image)
 
     def __save_frame(self, dir_out):
         coords = ut.Point2D(self.__box_original.x1(), self.__box_original.y1())
@@ -104,27 +108,22 @@ class Face:
        self.__write_landmarks_to_image(self.image())
 
     def __write_box(self):
-        self.__write_box_to_image(self.image())
+        self.write_box_to_image(self.image())
 
     def __write_landmarks_to_image(self, image):
         landmarks = self.landmarks()
         for x, y in landmarks:
             cv2.circle(image, (int(x), int(y)), radius=Face.__RADIUS_LANDMARK, thickness=Face.__THICKNESS_LANDMARK, color=Face.__COLOUR_LANDMARK)
 
-    def __write_box_to_image(self, image):
-        pt1 = (self.x1(), self.y1())
-        pt2 = (self.x2(), self.y2())
+    def write_box_to_image(self, image):
+        pt1 = (self.x1() - 100, self.y1() - 30)
+        pt2 = (self.x2() + 100, self.y2() + 30)
         cv2.rectangle(image, pt1, pt2, thickness=Face.__THICKNESS_RECTANGLE, color=Face.__COLOUR_RECTANGLE)
-
-
-
-
-
+    
 class Person:
-    #__faces                 : list of Faces belonging to Person in video
-    #__is_tracked            ; are they tracked?
-    #__tracker               : tracker bound to Person
-    #
+    #__faces : list of Faces belonging to Person in video
+    #__is_tracked : are they tracked?
+    #__tracker : tracker bound to Person
     def __init__(self, face, frame, type_tracker, is_tracked=True):
         self.__faces = [face]
         #create and init tracker with first face's bounding box
@@ -138,7 +137,7 @@ class Person:
 
     def __init_tracker(self, frame, box):
         return self.__tracker.init(frame.image(), box.tuple())
-
+    
     def faces(self):
         return self.__faces
     def face(self, index):
@@ -167,7 +166,6 @@ class Person:
 
     def set_face(self, index, face):
         self.__faces[index] = face
-
 
     def update_tracker(self, frame):
         #update bounding box from tracker

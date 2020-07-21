@@ -75,15 +75,10 @@ class LandmarkWarper:
         face.set_warped(box_face, image_warped, landmarks_warped)
 
     def __resize_face(self, face: fc.Face):
-        """
-        the three points of interest are:
-        the eyes and the mouth
-        """
-        w, h = self.dim_resize().tuple()
-        box_face = ut.BoundingBox(0, 0, w, h)
-        # resize image
-        output = box_face.crop_image(face.image())
-        face.set_warped(box_face, output, face.landmarks())
+        #face.write_box_to_image(face.image())
+        cropped = face.image()[face.x1() - 100:face.x2() + 100, face.y1() - 30:face.y2() + 30]
+        cv2.imshow("cropped", cropped)
+        #face.set_warped(face.box(), output, face.landmarks())
 
     def __warp_image(self, image, matrix_warp):
         return cv2.warpAffine(image,

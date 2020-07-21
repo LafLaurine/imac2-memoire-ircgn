@@ -23,7 +23,6 @@ dir_model_landmark_default       = "../../../models/landmark_model"
 name_model_landmark_default      = "lbfmodel.yaml"
 name_model_landmark_alt_default  = "shape_predictor_68_face_landmarks.dat"
 
-
 ## Detection parameters
 method_detection_default         = "DNN_TRACKING"
 type_tracker_default             = "CSRT" #most accurate, quite slow
@@ -32,9 +31,9 @@ min_confidence_default           = 0.95
 step_frame_default               = 1
 
 ##Feature warping parameters
-pair_left_eye_default            = (0.66, 0.35)
-pair_right_eye_default           = (0.33, 0.35) #IN [0, 1], proportion of face image dimensions
-pair_mouth_default               = (0.5, 0.72)
+pair_left_eye_default            = (0.60, 0.40)
+pair_right_eye_default           = (0.40, 0.40) #IN [0, 1], proportion of face image dimensions
+pair_mouth_default               = (0.5, 0.65)
 pairs_interest_prop_default      = (pair_left_eye_default,
                                pair_right_eye_default,
                                pair_mouth_default)
@@ -286,7 +285,8 @@ class FaceExtractor:
                                                  )
         ut.log(log_enabled, "[INFO] detecting landmarks...")
         FaceExtractor.compute_landmarks_people(list_people, net_landmark)
-        ut.log(log_enabled, "[INFO] warping faces...")
+        if are_warped:
+            ut.log(log_enabled, "[INFO] warping faces...")
         FaceExtractor.warp_from_landmarks(list_people=list_people,
                                           warper=warper,
                                           are_warped=are_warped,

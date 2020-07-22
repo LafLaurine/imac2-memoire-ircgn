@@ -116,8 +116,8 @@ class Face:
             cv2.circle(image, (int(x), int(y)), radius=Face.__RADIUS_LANDMARK, thickness=Face.__THICKNESS_LANDMARK, color=Face.__COLOUR_LANDMARK)
 
     def write_box_to_image(self, image):
-        pt1 = (self.x1() - 100, self.y1() - 30)
-        pt2 = (self.x2() + 100, self.y2() + 30)
+        pt1 = (self.x1(), self.y1())
+        pt2 = (self.x2(), self.y2())
         cv2.rectangle(image, pt1, pt2, thickness=Face.__THICKNESS_RECTANGLE, color=Face.__COLOUR_RECTANGLE)
     
 class Person:

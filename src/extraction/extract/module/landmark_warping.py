@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import cv2
 from . import common_utils as ut
 from . import common_face as fc
@@ -65,7 +66,10 @@ class LandmarkWarper:
         # first, we compute the positions of the three points of interest
         points_interest_face = LandmarkWarper.__get_points_interest(face.landmarks())
         # Then we get warp matrix from opencv FROM Face TO BASELINE
-        mat_warp = self.__get_transform_matrix(points_interest_face)
+        ide = np.identity(3)
+        ide = np.delete(ide, 2,0)
+        mat_warp = ide 
+        #self.__get_transform_matrix(points_interest_face)
         # Finally we can compute the warped image
         image_warped = self.__warp_image(face.image(), mat_warp)
         w, h = self.dim_resize().tuple()
@@ -73,13 +77,6 @@ class LandmarkWarper:
         landmarks_warped = LandmarkWarper.__warp_landmarks(face.landmarks(), mat_warp)
         # Face is updated with warping
         face.set_warped(box_face, image_warped, landmarks_warped)
-
-    def __resize_face(self, face: fc.Face):
-        #face.write_box_to_image(face.image())
-        #face.set_warped(face.box(), output, face.landmarks())
-        pt1 = (face.x1() - 100, face.y1() - 30)
-        pt2 = (face.x2() + 100, face.y2() + 30)
-        cv2.rectangle(face.image(), pt1, pt2, thickness=6, color=(127, 0, 255))
         
     def __warp_image(self, image, matrix_warp):
         return cv2.warpAffine(image,

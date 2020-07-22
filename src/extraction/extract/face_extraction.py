@@ -48,7 +48,6 @@ method_resize_default            = cv2.INTER_LINEAR
 are_saved_default                 = False
 are_saved_landmarks_default       = False
 is_saved_rectangle_default        = False
-are_warped_default                = True
 are_culled_default                = True
 log_enabled_default               = True
 
@@ -101,7 +100,6 @@ class FaceExtractor:
             name_config_model_face=name_config_model_face_default,  # path to prototxt configuration file
             size_net=size_net_default,  # size of the processing dnn
             mean_net=mean_net_default,  # mean colour to be substracted
-            are_warped=are_warped_default,
             are_culled=are_culled_default,
             type_tracker=type_tracker_default,  # WHEN TRACKING: tracker type such as MIL, Boosting...
             are_saved=are_saved_default,  # save image in output directory
@@ -151,7 +149,6 @@ class FaceExtractor:
                                                 min_confidence=min_confidence,
                                                 size_net=size_net,
                                                 mean_net=mean_net,
-                                                are_warped=are_warped,
                                                 are_culled=are_culled,
                                                 type_tracker=type_tracker,
                                                 are_saved=are_saved,
@@ -233,7 +230,6 @@ class FaceExtractor:
                                                 min_confidence=min_confidence,
                                                 size_net=size_net,
                                                 mean_net=mean_net,
-                                                are_warped=False,
                                                 are_culled=False,
                                                 type_tracker=type_tracker,
                                                 are_saved=False,
@@ -263,7 +259,6 @@ class FaceExtractor:
                         min_confidence=min_confidence_default,  # confidence threshold
                         size_net=size_net_default,
                         mean_net=mean_net_default,
-                        are_warped=are_warped_default,
                         are_culled=are_culled_default,
                         type_tracker=type_tracker_default,  # WHEN TRACKING: tracker type such as MIL, Boosting...
                         are_saved=are_saved_default,  # save image in output directory
@@ -279,17 +274,15 @@ class FaceExtractor:
                                                  min_confidence,
                                                  net_face,
                                                  size_net,
+
                                                  mean_net,
                                                  type_tracker,
                                                  log_enabled
                                                  )
         ut.log(log_enabled, "[INFO] detecting landmarks...")
         FaceExtractor.compute_landmarks_people(list_people, net_landmark)
-        if are_warped:
-            ut.log(log_enabled, "[INFO] warping faces...")
         FaceExtractor.warp_from_landmarks(list_people=list_people,
                                           warper=warper,
-                                          are_warped=are_warped,
                                           are_culled=are_culled)
         if are_saved:
             ut.log(log_enabled, "[INFO] saving output to " + dir_out)
@@ -318,7 +311,6 @@ class FaceExtractor:
                 name_config_model_face  = name_config_model_face_default,  # path to prototxt configuration file
                 size_net                = size_net_default,  # size of the processing dnn
                 mean_net                = mean_net_default,  # mean colour to be substracted
-                are_warped              = are_warped_default,
                 are_culled              = are_culled_default,
                 type_tracker            = type_tracker_default,  # WHEN TRACKING: tracker type such as MIL, Boosting...
                 are_saved               = are_saved_default,  # save image in output directory
@@ -352,7 +344,6 @@ class FaceExtractor:
                                     min_confidence=min_confidence,
                                     size_net=size_net,
                                     mean_net=mean_net,
-                                    are_warped=are_warped,
                                     are_culled=are_culled,
                                     type_tracker=type_tracker,
                                     are_saved=are_saved,
@@ -431,17 +422,13 @@ class FaceExtractor:
     @staticmethod
     def warp_from_landmarks(list_people,
                             warper,
-                            are_warped,
                             are_culled,
                             ):
 
         for person in list_people:
             if are_culled:
                 person.cull_faces()
-            if are_warped:
-                warper.warp_person(person)
-            elif not are_warped:
-                warper.resize_person(person)
+            warper.warp_person(person)
 
     @staticmethod
     def save_people(list_people, dir_out, are_saved_landmarks, is_saved_rectangle):

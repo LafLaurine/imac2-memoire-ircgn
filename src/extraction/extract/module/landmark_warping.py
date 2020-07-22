@@ -76,10 +76,11 @@ class LandmarkWarper:
 
     def __resize_face(self, face: fc.Face):
         #face.write_box_to_image(face.image())
-        cropped = face.image()[face.x1() - 100:face.x2() + 100, face.y1() - 30:face.y2() + 30]
-        cv2.imshow("cropped", cropped)
         #face.set_warped(face.box(), output, face.landmarks())
-
+        pt1 = (face.x1() - 100, face.y1() - 30)
+        pt2 = (face.x2() + 100, face.y2() + 30)
+        cv2.rectangle(face.image(), pt1, pt2, thickness=6, color=(127, 0, 255))
+        
     def __warp_image(self, image, matrix_warp):
         return cv2.warpAffine(image,
                               matrix_warp,

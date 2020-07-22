@@ -18,7 +18,6 @@ parser = argparse.ArgumentParser(description="Extract faces and warp according t
 parser.add_argument("--source",    '-s', required=True, type=str, help="video from which to extract.")
 parser.add_argument("--dest",      '-d', required=True, type=str, help="directory in which to put extracted face.")
 parser.add_argument("--method",    '-m', required=True, type=str, help="""Can be either DNN or DNN_TRACKING""")
-parser.add_argument("--nowarp",    '-w', action='store_true', help="Faces will not be aligned on the basis of eyes and mouth." )
 parser.add_argument("--nocull",    '-c', action='store_true', help="Faces will not be culled according to out-of-bounds landmarks." )
 parser.add_argument("--landmarks", '-l', action='store_true', help="IF NOT WARPED: Facial landmarks will be saved along with the corresponding face.")
 parser.add_argument("--rectangle", '-r', action='store_true', help="IF NOT WARPED: Rectangle from face detection will be drawn in output image.")
@@ -38,7 +37,6 @@ if __name__ == "__main__":
     end_frame = args["end"]
     step_frame = args["step"]
     max_frame = args["max"]
-    are_warped = not args["nowarp"]
     are_culled = not args["nocull"]
     are_saved_landmarks = args["landmarks"]
     is_saved_rectangle = args["rectangle"]
@@ -51,7 +49,6 @@ if __name__ == "__main__":
         max_frame=max_frame,
         min_confidence=min_confidence,
         type_tracker=type_tracker,
-        are_warped=are_warped,
         are_culled=are_culled,
         are_saved=are_saved,
         are_saved_landmarks=are_saved_landmarks,

@@ -49,34 +49,39 @@ class LandmarkWarper:
     def method_resize(self):
         return self.__method_resize
 
-
     def warp_person(self, person: fc.Person):
         for face in person:
             self.__warp_face(face)
 
-    def resize_person(self, person: fc.Person):
-        for face in person:
-            self.__resize_face(face)
-
     def __warp_face(self, face: fc.Face):
-        """
-        the three points of interest are:
-        the eyes and the mouth
-        """
-        # first, we compute the positions of the three points of interest
-        points_interest_face = LandmarkWarper.__get_points_interest(face.landmarks())
         # Then we get warp matrix from opencv FROM Face TO BASELINE
-        ide = np.identity(3)
-        ide = np.delete(ide, 2,0)
-        mat_warp = ide 
-        #self.__get_transform_matrix(points_interest_face)
+        mat_warp = self.__get_matrix(face)
         # Finally we can compute the warped image
         image_warped = self.__warp_image(face.image(), mat_warp)
         w, h = self.dim_resize().tuple()
         box_face = ut.BoundingBox(0, 0, w, h)
-        landmarks_warped = LandmarkWarper.__warp_landmarks(face.landmarks(), mat_warp)
+        ide = np.identity(3)
+        ide = np.delete(ide, 2,0)
+        landmarks_warped = LandmarkWarper.__warp_landmarks(face.landmarks(), ide)
         # Face is updated with warping
         face.set_warped(box_face, image_warped, landmarks_warped)
+    
+    def __get_matrix(self,face: fc.Face):
+        # first, we compute the positions of the three points of interest
+        points_interest_face = LandmarkWarper.__get_points_interest(face.landmarks())
+        # Then we get warp matrix from opencv FROM Face TO BASELINE
+        mat_warp = self.__get_transform_matrix(points_interest_face)
+        return mat_warp
+
+    def unwrap_image(self, image):
+        matrix_warp = self.__get_matrix(fc.Face)
+        mat_warp_inv = cv2.invertAffineTransform(matrix_warp)
+        return cv2.warpAffine(image,
+                              mat_warp_inv,
+                              self.dim_resize().tuple(),
+                              self.method_resize(),
+                              self.mode_border()
+                              )
         
     def __warp_image(self, image, matrix_warp):
         return cv2.warpAffine(image,

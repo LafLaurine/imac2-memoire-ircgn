@@ -88,6 +88,7 @@ class Face:
         return True
 
     def save(self, dir_out, are_landmarks_saved=False, is_rectangle_saved=False):
+        #LandmarkWarper.unwrap_image(self.image())
         self.__write_to_image(self.image(), are_landmarks_saved, is_rectangle_saved)
         self.__save_frame(dir_out)
 

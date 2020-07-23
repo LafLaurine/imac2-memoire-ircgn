@@ -14,8 +14,5 @@ def read_frames_from_source(src, start_frame, end_frame, step_frame, max_frame, 
 
 class DetectionMethod: pass
 
-class LandmarkWarper: pass
-
-
 def log(log_enabled, message): pass
 

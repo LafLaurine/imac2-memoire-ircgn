@@ -11,11 +11,12 @@ chipCorners = np.float32([[0,0],
 
 # Initialize the face alignment tracker
 fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, flip_input=True,  device='cpu')
-
+count = 0
 # Start the webcam capture, exit with 'q'
-cap = cv2.VideoCapture("WIN_20200619_10_13_16_Pro.mp4")
+cap = cv2.VideoCapture("test_masque_crop.webm")
 while(not (cv2.waitKey(1) & 0xFF == ord('q'))):
     ret, frame = cap.read()
+    count = count +1
     if(ret):
         # Run the face alignment tracker on the webcam image
         imagePoints = fa.get_landmarks_from_image(frame)
@@ -48,8 +49,10 @@ while(not (cv2.waitKey(1) & 0xFF == ord('q'))):
             chipMatrix = cv2.getPerspectiveTransform(imageCorners, chipCorners)
             chip = cv2.warpPerspective(frame, chipMatrix, (chipSize, chipSize))
 
-        cv2.imshow('Webcam View', frame)
-        cv2.imshow('Chip View', chip)
+        #cv2.imshow('Webcam View', frame)
+        #cv2.imshow('Chip View', chip)
+        imageName = "extracted_faces/image{:03d}.png".format(count)
+        cv2.imwrite(imageName, chip) 
 
 # When everything is done, release the capture
 cap.release()

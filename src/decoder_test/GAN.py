@@ -174,7 +174,7 @@ def train(g_model, d_model, gan_model, dataset, latent_dim, n_epochs=1, n_batch=
 			print('>%d, %d/%d, d1=%.3f, d2=%.3f g=%.3f' %
 				(i+1, j+1, bat_per_epo, d_loss1, d_loss2, g_loss))
 	# save the generator model
-	g_model.save('cgan_generator.h5')
+	g_model.save('generator.txt')
 
 # size of the latent space
 latent_dim = 100
@@ -202,7 +202,7 @@ def save_plot(examples, n):
 	pyplot.show()
 
 # load model
-model = load_model('cgan_generator.h5')
+model = load_model('lips_dist.txt')
 # generate images
 latent_points, labels = generate_latent_points(100, 100)
 # specify labels

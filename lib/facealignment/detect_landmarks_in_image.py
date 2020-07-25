@@ -1,10 +1,12 @@
 import face_alignment
 import argparse
 import cv2
+import os
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import collections
 from numpy import *
+import glob
 import numpy as np
 
 import sys
@@ -14,11 +16,10 @@ from src.transform_image import *
 from src.lips import *
 
 ## Get arguments from user
-#
 def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='Detecting landmarks')
-    parser.add_argument('--image', dest='image_path', help='Path of image')
+    parser.add_argument('--directory', dest='directory_path', help='Path of directory')
     args = parser.parse_args()
     return args
 
@@ -100,17 +101,17 @@ def draw(frame, imagePoints):
 def main():
     # Run the 3D face alignment with CPU on a test image : change cpu to cuda
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cpu', flip_input=False, face_detector='sfd')
-
-    frame = cv2.imread(image_path,1)
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-    # Get landmarks of the input image
-    imagePoints = fa.get_landmarks_from_image(frame)
-    draw(frame,imagePoints)
-    #create a new image
+    for dirs in glob.glob(directory_path):
+        for filename in os.listdir(dirs):
+            frame = cv2.imread(os.path.join(dirs, filename),1)
+            if frame is not None:
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                # Get landmarks of the input image
+                imagePoints = fa.get_landmarks_from_image(frame)
+                draw(frame,imagePoints)
     
 if __name__ == '__main__':
     args = parse_args()
-    image_path = "../../"+args.image_path
+    directory_path = "../../"+args.directory_path
     main()
     cv2.destroyAllWindows()

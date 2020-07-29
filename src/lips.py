@@ -27,14 +27,24 @@ def get_distance_lips():
         y_upper_lips_center = imagePoints[0][62][1]
         y_lower_lips_center = imagePoints[0][66][1]
         distance = math.sqrt((x_lower_lips_center - x_upper_lips_center)**2 +(y_lower_lips_center - y_upper_lips_center)**2)
-        # writing to csv file  
-        with open("lips_dist.csv", 'w') as csvfile:  
+        # writing to txt file
+        with open("../../src/lips_dist.txt", "ab") as f:
+            np.savetxt(f, [distance])
+        #np.savetxt('../../src/lips_dist.txt',[distance], delimiter=',')
+        #file1 = open("../../src/lips_dist.txt","a")#append mode 
+        #file1.write(str(distance)) 
+        #file1.write(str(',')) 
+        #file1.close() 
+        # writing to csv file 
+        '''with open("../../src/lips_dist.csv", 'w') as csvfile:  
             # creating a csv writer object  
             csvwriter = csv.writer(csvfile)
             # writing the fields  
             csvwriter.writerow(["lips distance"])  
             # writing the data rows  
-            csvwriter.writerows([distance]) 
+            dist = [2]
+            dist[0]=distance
+            csvwriter.writerows([dist]) '''
         return (distance)
 
     

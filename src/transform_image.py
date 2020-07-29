@@ -39,7 +39,7 @@ def perspective_trans(imagePoints,frame):
 
     plt.subplot(121),plt.imshow(frame),plt.title('Input')
     plt.subplot(122),plt.imshow(dst),plt.title('Output')
-    plt.show()
+    #plt.show()
 
     directory = '../../dataset/standardize_pic'
     os.chdir(directory) 

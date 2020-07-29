@@ -44,7 +44,7 @@ def draw(frame, imagePoints):
         # compute the Mean-Centered-Scaled Points
         mean = np.mean(imagePoints, axis=0)
         # draw the computed data
-        for imagePoint in imagePoints:
+        '''for imagePoint in imagePoints:
             # draw the Point Predictions
             cv2.circle(frame, (imagePoint[0], imagePoint[1]), 3, (0,255,0))
 
@@ -68,11 +68,12 @@ def draw(frame, imagePoints):
 
     fig = plt.figure(figsize=plt.figaspect(.5))
     ax = fig.add_subplot(1, 2, 1)
-    ax.imshow(frame)
+    #ax.imshow(frame)
 
     # that's the part where we draw lines
-    '''for pred_type in pred_types.values():
-        ax.plot(imagePoints[pred_type.slice, 0],imagePoints[pred_type.slice, 1],color=pred_type.color, **plot_style)'''
+
+    for pred_type in pred_types.values():
+        ax.plot(imagePoints[pred_type.slice, 0],imagePoints[pred_type.slice, 1],color=pred_type.color, **plot_style)
 
     ax.axis('off')
 
@@ -85,13 +86,10 @@ def draw(frame, imagePoints):
                     alpha=1.0,
                     edgecolor='b')
 
-    '''for pred_type in pred_types.values():
-        ax.plot3D(imagePoints[pred_type.slice, 0] * 1.2,
-                imagePoints[pred_type.slice, 1],
-                imagePoints[pred_type.slice, 2], color='blue')'''
     ax.view_init(elev=90., azim=90.)
     ax.set_xlim(ax.get_xlim()[::-1])
-    plt.show()
+    #plt.show()
+    '''
 
 
 def main():

@@ -60,8 +60,8 @@ def get_rotation_matrix(imagePoints):
     # get rotation from rotation matrix
     (theta, phi, psi) = rotationMatrixToEulerAngles(Q) * 180 / np.pi
     print(theta,phi,psi)
-    with open('../../src/rotation_matrix.txt','a+' ) as f:
-        np.savetxt(f, [theta, phi, psi], fmt='%.2f', delimiter=',')
+    with open("../../src/euler_angles.txt", "ab") as f:
+            np.savetxt(f, [theta,phi,psi])
     return N,Q,R
 
 ## Check if a matrix is a valid rotation matrix

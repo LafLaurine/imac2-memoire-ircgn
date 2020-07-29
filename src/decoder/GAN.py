@@ -225,7 +225,7 @@ def save_plot(examples, n):
 	pyplot.show()
 
 # load model
-model = load_model('lips_dist.txt')
+model = load_model('../lips_dist.txt')
 # generate images
 latent_points, labels = generate_latent_points(100, 100)
 # specify labels

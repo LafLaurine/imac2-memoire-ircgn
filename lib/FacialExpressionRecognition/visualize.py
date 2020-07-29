@@ -54,6 +54,7 @@ def draw(raw_img,class_names,score):
     plt.savefig(os.path.join(output_path))
     plt.close()
     
+    
 
 def main():
     cut_size = 44

@@ -53,6 +53,9 @@ def draw(raw_img,class_names,score):
 
     plt.savefig(os.path.join(output_path))
     plt.close()
+    with open("../../src/expression.txt", "ab") as f:
+            np.savetxt(f, [outputs_avg[0].item()])
+    
 
 def main():
     cut_size = 44

@@ -93,6 +93,7 @@ def main():
     _, predicted = torch.max(outputs_avg.data, 0)
     draw(raw_img,class_names,score)
     print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
+    print(score.eval())
 
 if __name__ == '__main__':
     args = parse_args()

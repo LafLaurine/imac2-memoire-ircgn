@@ -70,7 +70,7 @@ def main():
                 print("Saving face... ")
                 print(count)
                 path = pathlib.Path('extracted_faces/'+subdirectory).mkdir(parents=True, exist_ok=True) 
-                imageName = path + "frame%d.jpg" % frameId
+                imageName = "frame%d.jpg" % frameId
                 cv2.imwrite(imageName, chip)
     # When everything is done, release the capture
     cap.release()

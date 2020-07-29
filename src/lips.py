@@ -1,4 +1,5 @@
 import cv2
+import csv
 import math
 import face_alignment
 from numpy import *
@@ -19,16 +20,22 @@ def get_distance_lips():
     # Get landmarks of the input image
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cpu', flip_input=False, face_detector='sfd')
     imagePoints = fa.get_landmarks_from_image(frame)
-
-    height, width ,aux= frame.shape
-    x_upper_lips_center = imagePoints[0][62][0]
-    x_lower_lips_center = imagePoints[0][66][0]
-    y_upper_lips_center = imagePoints[0][62][1]
-    y_lower_lips_center = imagePoints[0][66][1]
-    distance = math.sqrt((x_lower_lips_center - x_upper_lips_center)**2 +(y_lower_lips_center - y_upper_lips_center)**2)
-    with open('../../src/lips_dist.txt','a+' ) as f:
-            np.savetxt(f, [distance], fmt='%.2f', delimiter=',')
-    return (distance)
+    if(imagePoints):
+        height, width ,aux= frame.shape
+        x_upper_lips_center = imagePoints[0][62][0]
+        x_lower_lips_center = imagePoints[0][66][0]
+        y_upper_lips_center = imagePoints[0][62][1]
+        y_lower_lips_center = imagePoints[0][66][1]
+        distance = math.sqrt((x_lower_lips_center - x_upper_lips_center)**2 +(y_lower_lips_center - y_upper_lips_center)**2)
+        # writing to csv file  
+        with open("lips_dist.csv", 'w') as csvfile:  
+            # creating a csv writer object  
+            csvwriter = csv.writer(csvfile)
+            # writing the fields  
+            csvwriter.writerow(["lips distance"])  
+            # writing the data rows  
+            csvwriter.writerows([distance]) 
+        return (distance)
 
     
     

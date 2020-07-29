@@ -109,6 +109,7 @@ def main():
                 # Get landmarks of the input image
                 imagePoints = fa.get_landmarks_from_image(frame)
                 draw(frame,imagePoints)
+                
     
 if __name__ == '__main__':
     args = parse_args()

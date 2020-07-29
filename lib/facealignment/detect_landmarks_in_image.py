@@ -36,10 +36,6 @@ def draw(frame, imagePoints):
         distancelips = get_distance_lips()
         print('distance lips = ' ,distancelips)
         N,Q,R = get_rotation_matrix(imagePoints)
-        
-        #affine_trans_image(N,frame)
-        #affine_trans_2(N,frame)
-        #affine_trans_3(N,Q,R,frame)
 
         x_axis = Q[:,0]
         y_axis = Q[:,1]

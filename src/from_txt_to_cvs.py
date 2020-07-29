@@ -9,7 +9,6 @@ col_angles = np.float32(np.loadtxt('euler_angles.txt'))
 col_expression = np.float32(np.loadtxt('expression.txt'))
 
 
-print(np.loadtxt('lips_dist.txt'))
 with open("all_data.csv", 'w') as csvfile:  
             # creating a csv writer object  
             csvwriter = csv.writer(csvfile)

@@ -53,8 +53,6 @@ def draw(raw_img,class_names,score):
 
     plt.savefig(os.path.join(output_path))
     plt.close()
-    with open("../../src/expression.txt", "ab") as f:
-            np.savetxt(f, [outputs_avg[0].item()])
     
 
 def main():
@@ -96,7 +94,8 @@ def main():
     _, predicted = torch.max(outputs_avg.data, 0)
     draw(raw_img,class_names,score)
     print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
-    print(score.eval())
+    with open("../../src/expression.txt", "ab") as f:
+        np.savetxt(f, [[outputs_avg[0].item()],[outputs_avg[1].item()],[outputs_avg[2].item()],[outputs_avg[3].item()],[outputs_avg[4].item()],[outputs_avg[5].item()],[outputs_avg[6].item()]])
 
 if __name__ == '__main__':
     args = parse_args()

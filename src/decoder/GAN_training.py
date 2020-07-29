@@ -19,7 +19,7 @@ def run_training(generator, discriminator, gan, df=df_celeb, start_it=0, num_epo
       X = np.empty(shape=(size, SPATIAL_DIM, SPATIAL_DIM, 3))
       for i in range(0, size):
           file = cur_files.iloc[i]
-          img_uri = 'extracted_faces/' + file.image_id
+          img_uri = 'extracted_faces/Pierre' + file.image_id
           img = cv2.imread(img_uri)
           img = cv2.resize(img, (SPATIAL_DIM, SPATIAL_DIM))
           img = np.flip(img, axis=2)

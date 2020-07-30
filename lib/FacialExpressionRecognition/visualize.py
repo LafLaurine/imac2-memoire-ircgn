@@ -95,8 +95,9 @@ def main():
     _, predicted = torch.max(outputs_avg.data, 0)
     draw(raw_img,class_names,score)
     print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
+    expr = [[score[0].item(),score[1].item(),score[2].item(),score[3].item(),score[4].item(),score[5].item(),score[6].item()]]
     with open("../../src/expression.txt", "ab") as f:
-        np.savetxt(f, [[outputs_avg[0].item()],[outputs_avg[1].item()],[outputs_avg[2].item()],[outputs_avg[3].item()],[outputs_avg[4].item()],[outputs_avg[5].item()],[outputs_avg[6].item()]])
+        np.savetxt(f, expr)
 
 if __name__ == '__main__':
     args = parse_args()

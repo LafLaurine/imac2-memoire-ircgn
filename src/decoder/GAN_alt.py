@@ -1,6 +1,7 @@
 from keras.layers import Conv2D, BatchNormalization, Input, GlobalAveragePooling2D, Dense, Deconvolution2D, Reshape
 from keras.models import Model
 from keras.layers.advanced_activations import LeakyReLU
+from keras.models import Sequential
 
 import pandas as pd
 import os
@@ -62,8 +63,8 @@ def build_generator(start_filters, filter_size, latent_dim):
   return Model(inputs=inp, outputs=x)
 
 # load our dataset attributes
-df_dataset = pd.read_csv('all_data.csv')
-TOTAL_SAMPLES = df_dataset.shape[0]
+df_celeb = pd.read_csv('../all_data.csv')
+TOTAL_SAMPLES = df_celeb.shape[0]
 
 # we will downscale the images
 SPATIAL_DIM = 64 

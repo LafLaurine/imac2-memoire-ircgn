@@ -20,7 +20,6 @@ def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='Detecting facial expression')
     parser.add_argument('--image', dest='image_path', help='Path of image')
-    parser.add_argument('--output', dest='output_path', help='Path of the output')
     args = parser.parse_args()
     return args
 
@@ -51,7 +50,6 @@ def draw(raw_img,class_names,score):
     plt.ylabel(" Classification Score ",fontsize=16)
     plt.xticks(ind, class_names, rotation=45, fontsize=14)
 
-    plt.savefig(os.path.join(output_path))
     plt.close()
     
     
@@ -95,12 +93,11 @@ def main():
     _, predicted = torch.max(outputs_avg.data, 0)
     draw(raw_img,class_names,score)
     print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
-    expr = [[score[0].item(),score[1].item(),score[2].item(),score[3].item(),score[4].item(),score[5].item(),score[6].item()]]
+    expr = [score[0].item(),score[1].item(),score[2].item(),score[3].item(),score[4].item(),score[5].item(),score[6].item()]
     with open("../../src/expression.txt", "ab") as f:
         np.savetxt(f, expr)
 
 if __name__ == '__main__':
     args = parse_args()
     image_path = "../../"+args.image_path
-    output_path = args.output_path
     main()

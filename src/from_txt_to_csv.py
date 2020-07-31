@@ -12,7 +12,8 @@ col_expression = np.float32(np.loadtxt('expression.txt'))
 with open("all_data.csv", 'w') as outfile:  
     # creating a csv writer object  
     csvwriter = csv.writer(outfile, delimiter=',')
-    csvwriter.writerow(['File_name','Lips_distance', 'Euler\'s_angles'])
+    csvwriter.writerow(['File_name','Lips_distance', 'Euler\'s_angles','Expression'])
     csvwriter.writerows([['frame30.jpg','frame60.jpg','frame90.jpg','frame120.jpg','frame150.jpg']])
     csvwriter.writerows([col_lips])
     csvwriter.writerows([col_angles])
+    csvwriter.writerows([col_expression])

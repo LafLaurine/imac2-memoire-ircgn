@@ -67,7 +67,7 @@ def build_generator(start_filters, filter_size, latent_dim):
   return Model(inputs=inp, outputs=x)
 
 # load our dataset attributes
-df_celeb = pd.read_csv('../all_data.csv')
+df_celeb = pd.read_csv('../data.csv')
 TOTAL_SAMPLES = df_celeb.shape[0]
 
 # we will downscale the images
@@ -137,7 +137,7 @@ def get_real_images(df, size, total):
 
 
 # function for training a GAN
-def run_training(generator, discriminator, gan, df=df_celeb, start_it=0, num_epochs=1000, 
+def run_training(generator, discriminator, gan, df=df_celeb, start_it=0, num_epochs=10, 
                  get_real_images=get_real_images):
 
   # list for storing loss

@@ -13,5 +13,5 @@ This school project is conducted by the [Institut de recherche criminelle de la 
 
 ### Authors
 
-* Laurine Lafontaine - [Github](https://github.com/LafLaurine)
 * Pierre Labendzki - [Github](https://github.com/pierrelabendzki)
+* Laurine Lafontaine - [Github](https://github.com/LafLaurine)

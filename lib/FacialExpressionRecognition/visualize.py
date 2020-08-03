@@ -95,7 +95,7 @@ def main():
     print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
     expr = [score[0].item(),score[1].item(),score[2].item(),score[3].item(),score[4].item(),score[5].item(),score[6].item()]
     with open("../../src/expression.txt", "ab") as f:
-        np.savetxt(f, expr)
+        np.savetxt(f, [expr],  delimiter=' ')
 
 if __name__ == '__main__':
     args = parse_args()

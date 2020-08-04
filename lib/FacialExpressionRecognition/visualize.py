@@ -9,29 +9,16 @@ import os
 import cv2
 from torch.autograd import Variable
 
-import transforms as transforms
+import lib.FacialExpressionRecognition.transforms as transforms
 
 import sys
 sys.path.append('../../')
 from models.FacialExpressionRecognition import *
 
-
-def parse_args():
-    """Parse input arguments."""
-    parser = argparse.ArgumentParser(description='Detecting facial expression')
-    parser.add_argument('--image', dest='image_path', help='Path of image')
-    args = parser.parse_args()
-    return args
-
-
-def rgb2gray(rgb):
-    return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
-
-
-def draw(raw_img,class_names,score):    
+def draw(frame,class_names,score):    
     plt.rcParams['figure.figsize'] = (13.5,5.5)
     axes=plt.subplot(1, 3, 1)
-    plt.imshow(raw_img)
+    plt.imshow(frame)
     plt.xlabel('Input Image', fontsize=16)
     axes.set_xticks([])
     axes.set_yticks([])
@@ -49,12 +36,9 @@ def draw(raw_img,class_names,score):
     plt.xlabel(" Expression Category ",fontsize=16)
     plt.ylabel(" Classification Score ",fontsize=16)
     plt.xticks(ind, class_names, rotation=45, fontsize=14)
-
     plt.close()
     
-    
-
-def main():
+def get_expression(frame):
     cut_size = 44
 
     transform_test = transforms.Compose([
@@ -62,8 +46,7 @@ def main():
         transforms.Lambda(lambda crops: torch.stack([transforms.ToTensor()(crop) for crop in crops])),
     ])
 
-    raw_img = cv2.imread(image_path)[...,::-1]
-    gray = rgb2gray(raw_img)
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     gray = cv2.resize(gray, (48,48)).astype(np.uint8)
 
     img = gray[:, :, np.newaxis]
@@ -91,13 +74,8 @@ def main():
 
     score = F.softmax(outputs_avg,dim=0)
     _, predicted = torch.max(outputs_avg.data, 0)
-    draw(raw_img,class_names,score)
+    #draw(frame,class_names,score)
     print("The Expression is %s" %str(class_names[int(predicted.cpu().numpy())]))
     expr = [score[0].item(),score[1].item(),score[2].item(),score[3].item(),score[4].item(),score[5].item(),score[6].item()]
     with open("../../src/expression.txt", "ab") as f:
         np.savetxt(f, [expr],  delimiter=' ')
-
-if __name__ == '__main__':
-    args = parse_args()
-    image_path = "../../"+args.image_path
-    main()

@@ -10,7 +10,7 @@ from skimage import transform
 from skimage import img_as_float
 from scipy import ndimage, misc
 
-from src.get_rotation_matrix import *
+from get_rotation_matrix import *
 
 def get_distance_lips():
     image_path = "../../dataset/standardize_pic/standardize.png"
@@ -30,21 +30,6 @@ def get_distance_lips():
         # writing to txt file
         with open("../../src/lips_dist.txt", "ab") as f:
             np.savetxt(f, [distance])
-        #np.savetxt('../../src/lips_dist.txt',[distance], delimiter=',')
-        #file1 = open("../../src/lips_dist.txt","a")#append mode 
-        #file1.write(str(distance)) 
-        #file1.write(str(',')) 
-        #file1.close() 
-        # writing to csv file 
-        '''with open("../../src/lips_dist.csv", 'w') as csvfile:  
-            # creating a csv writer object  
-            csvwriter = csv.writer(csvfile)
-            # writing the fields  
-            csvwriter.writerow(["lips distance"])  
-            # writing the data rows  
-            dist = [2]
-            dist[0]=distance
-            csvwriter.writerows([dist]) '''
         return (distance)
 
     

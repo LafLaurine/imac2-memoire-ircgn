@@ -9,7 +9,7 @@ from skimage import transform
 from skimage import img_as_float
 from scipy import ndimage, misc
 
-from src.get_rotation_matrix import *
+from get_rotation_matrix import *
 
 def perspective_trans(imagePoints,frame):
     rows,cols,ch = frame.shape
@@ -41,7 +41,7 @@ def perspective_trans(imagePoints,frame):
     plt.subplot(122),plt.imshow(dst),plt.title('Output')
     #plt.show()
 
-    directory = '../../dataset/standardize_pic'
+    directory = '../dataset/standardize_pic'
     os.chdir(directory) 
     cv2.imwrite('standardize.png',cv2.cvtColor(dst, cv2.COLOR_RGB2BGR))
     directory = '../../lib/facealignment'

@@ -26,23 +26,21 @@ def perspective_trans(imagePoints,frame):
     key_landmarks[2,:] = key_landmarks_mouth
     #key_landmarks[3,:] = key_landmarks_nose
     K = np.delete(key_landmarks,2,1)
-    print(K)
     #savetxt('key_landmarks.csv',K, delimiter=',')
-
+    print("hallo")
     pts1 = np.float32(loadtxt('key_landmarks.csv', delimiter=','))
     pts2 = np.float32(K)
 
     M = cv2.getAffineTransform(pts1,pts2)
-    print(M)
     iM = cv2.invertAffineTransform(M)
     dst = cv2.warpAffine(frame,iM,(512,512))
 
-    plt.subplot(121),plt.imshow(frame),plt.title('Input')
+    '''plt.subplot(121),plt.imshow(frame),plt.title('Input')
     plt.subplot(122),plt.imshow(dst),plt.title('Output')
-    #plt.show()
+    plt.show()'''
 
     directory = '../dataset/standardize_pic'
     os.chdir(directory) 
     cv2.imwrite('standardize.png',cv2.cvtColor(dst, cv2.COLOR_RGB2BGR))
-    directory = '../../lib/facealignment'
+    directory = '../../src'
     os.chdir(directory) 

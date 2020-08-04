@@ -14,7 +14,7 @@ def get_rotation_matrix(imagePoints):
     
     #savetxt('data.csv', imagePoints[0], delimiter=',')
     
-    A = np.asmatrix(loadtxt('../../src/data.csv', delimiter=','))
+    A = np.asmatrix(loadtxt('../src/data.csv', delimiter=','))
     B = np.asmatrix((imagePoints[0]))
     
     # create column and row to add 
@@ -45,20 +45,12 @@ def get_rotation_matrix(imagePoints):
     N = np.delete(M,3,0)
     N = np.delete(N,3,1)
 
-    #verif with cv2
-    #pts1 = np.asmatrix(loadtxt('data.csv', delimiter=','))
-    #pts2 = np.asmatrix(imagePoints[0])
-    #Np = cv2.getAffineTransform(pts1,pts2)
-    #print(Np)
     # QR decomposition
     Q, R = np.linalg.qr(N)
-    print(N)
-    print(Q)
-    print(R)
     # get rotation from rotation matrix
     (theta, phi, psi) = rotationMatrixToEulerAngles(Q) * 180 / np.pi
     print(theta,phi,psi)
-    with open("../../src/euler_angles.txt", "ab") as f:
+    with open("../src/euler_angles.txt", "ab") as f:
             np.savetxt(f, [[theta,phi,psi]])
     return N,Q,R
 

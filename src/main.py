@@ -18,11 +18,14 @@ sys.path.append('../')
 from lib.facealignment.detect_landmarks_in_image import *
 from lib.FacialExpressionRecognition.visualize import get_expression
 
+vailed_ext = [".jpg",".png"]
+f_list = []
+
 ## Get arguments from user
 def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='Detecting landmarks')
-    parser.add_argument('--filename', dest='filename', help='Path of image')
+    parser.add_argument('--directory', dest='directory_path', help='Path of directory')
     args = parser.parse_args()
     return args
 
@@ -46,21 +49,26 @@ def draw(frame, imagePoints):
         # compute the Mean-Centered-Scaled Points
         mean = np.mean(imagePoints, axis=0)
 
+def load_images_from_folder(folder):
+    images = []
+    for filename in os.listdir(folder):
+        img = cv2.imread(os.path.join(folder,filename))
+        if img is not None:
+            images.append(img)
+    return images
+
 def main():
-    # Face orientation
+    images = load_images_from_folder(directory_path)
+    length = len(images)
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cpu', flip_input=False, face_detector='sfd')
-    '''if(os.path.isdir(directory_path)):
-        for filename in glob.glob(directory_path+'/*.jpg'):'''
-    frame = cv2.imread(filename)
-    print(frame)
-    imagePoints = detect_landmarks(frame, fa)
-    draw(frame,imagePoints)
-    get_expression(frame)
-    '''else:
-        print("This directory doesn't exist")'''
+    for i in range(length):
+        frame = images[i]
+        imagePoints = detect_landmarks(frame, fa)
+        draw(frame,imagePoints)
+        get_expression(frame)   
     
 if __name__ == '__main__':
     args = parse_args()
-    filename = args.filename
+    directory_path = args.directory_path
     main()
     cv2.destroyAllWindows()

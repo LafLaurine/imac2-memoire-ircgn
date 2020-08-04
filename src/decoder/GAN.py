@@ -67,8 +67,8 @@ def build_generator(start_filters, filter_size, latent_dim):
   return Model(inputs=inp, outputs=x)
 
 # load our dataset attributes
-df_celeb = pd.read_csv('../all_data.csv')
-TOTAL_SAMPLES = df_celeb.shape[0]
+df_dataset = pd.read_csv('../all_data.csv')
+TOTAL_SAMPLES = df_dataset.shape[0]
 
 # we will downscale the images
 SPATIAL_DIM = 64 
@@ -111,7 +111,7 @@ def construct_models(verbose=False):
         
     return generator, discriminator, gan
   
-generator_celeb, discriminator_celeb, gan_celeb = construct_models(verbose=True)
+genrator_faces, discriminator_faces, gan_faces = construct_models(verbose=True)
 
 
 # number of discriminator updates per alternating training iteration
@@ -137,7 +137,7 @@ def get_real_images(df, size, total):
 
 
 # function for training a GAN
-def run_training(generator, discriminator, gan, df=df_celeb, start_it=0, num_epochs=10, 
+def run_training(generator, discriminator, gan, df=df_dataset, start_it=0, num_epochs=10, 
                  get_real_images=get_real_images):
 
   # list for storing loss
@@ -210,8 +210,8 @@ def run_training(generator, discriminator, gan, df=df_celeb, start_it=0, num_epo
 
   return generator, discriminator, gan
 
-generator_celeb, discriminator_celeb, gan_celeb = run_training(generator_celeb, 
-                                                               discriminator_celeb, 
-                                                               gan_celeb, 
+genrator_faces, discriminator_faces, gan_faces = run_training(genrator_faces, 
+                                                               discriminator_faces, 
+                                                               gan_faces, 
                                                                num_epochs=100, 
-                                                               df=df_celeb)
+                                                               df=df_dataset)

@@ -13,7 +13,7 @@ from scipy import ndimage, misc
 from get_rotation_matrix import *
 
 def get_distance_lips():
-    image_path = "../../dataset/standardize_pic/standardize.png"
+    image_path = "../dataset/standardize_pic/standardize.png"
     frame = cv2.imread(image_path,1)
     frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -28,7 +28,7 @@ def get_distance_lips():
         y_lower_lips_center = imagePoints[0][66][1]
         distance = math.sqrt((x_lower_lips_center - x_upper_lips_center)**2 +(y_lower_lips_center - y_upper_lips_center)**2)
         # writing to txt file
-        with open("../../src/lips_dist.txt", "ab") as f:
+        with open("../src/lips_dist.txt", "ab") as f:
             np.savetxt(f, [distance])
         return (distance)
 

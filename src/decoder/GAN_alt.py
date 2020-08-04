@@ -67,7 +67,7 @@ def build_generator(start_filters, filter_size, latent_dim):
   return Model(inputs=inp, outputs=x)
 
 # load our dataset attributes
-df_celeb = pd.read_csv('../data.csv')
+df_celeb = pd.read_csv('../all_data.csv')
 TOTAL_SAMPLES = df_celeb.shape[0]
 
 # we will downscale the images

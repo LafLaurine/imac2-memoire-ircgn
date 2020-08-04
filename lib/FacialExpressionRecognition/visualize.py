@@ -60,13 +60,15 @@ def get_expression(frame):
     net = VGG('VGG19')
     checkpoint = torch.load(os.path.join('../../models/FacialExpressionRecognition/FER2013_VGG19', 'PrivateTest_model.t7'))
     net.load_state_dict(checkpoint['net'])
-    net.cuda()
+    if torch.cuda.is_available():
+        net.cuda()
     net.eval()
 
     ncrops, c, h, w = np.shape(inputs)
 
     inputs = inputs.view(-1, c, h, w)
-    inputs = inputs.cuda()
+    if torch.cuda.is_available():
+        inputs = inputs.cuda()
     inputs = Variable(inputs)
     outputs = net(inputs)
 

@@ -9,7 +9,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Detecting landmarks')
     parser.add_argument('--video', dest='video_path', help='Path of the video')
     parser.add_argument('--subdirectory', dest='subdirectory', help='Path of the subdirectory')
-    parser.add_argument('--n_seconds', dest='n_seconds', help='Extract frames every n seconds')
+    parser.add_argument('--n_step', dest='n_step', help='Extract frames every n step')
     args = parser.parse_args()
     return args
 
@@ -23,17 +23,15 @@ def main():
 
     # Initialize the face alignment tracker
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, flip_input=True,  device='cpu')
-    count = 0
     cap = cv2.VideoCapture(video_path)
     ret, frame = cap.read()
-    seconds = n_seconds
+    step = n_step
     fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
-    multiplier = fps * seconds
+    jump = 0
 
     while ret:
         frameId = int(round(cap.get(1)))
         ret, frame = cap.read()
-        count = count +1
         # Run the face alignment tracker
         if(ret):
             imagePoints = fa.get_landmarks_from_image(frame)
@@ -66,12 +64,14 @@ def main():
                 chipMatrix = cv2.getPerspectiveTransform(imageCorners, chipCorners)
                 chip = cv2.warpPerspective(frame, chipMatrix, (chipSize, chipSize))
         
-            if frameId % multiplier == 0:
-                print("Saving face... ")
-                print(count)
-                path = pathlib.Path('extracted_faces/'+subdirectory).mkdir(parents=True, exist_ok=True) 
-                imageName = "frame%d.jpg" % frameId
-                cv2.imwrite(imageName, chip)
+            #if frameId % multiplier == 0:
+            print("Saving face... %d" % frameId)
+            path = pathlib.Path('extracted_faces/'+subdirectory).mkdir(parents=True, exist_ok=True) 
+            imageName = "00000%d.jpg" % frameId
+            cv2.imwrite('extracted_faces/'+subdirectory+'/'+imageName, chip)
+            if step != 0:
+                jump = jump + (step*fps)
+                cap.set(1,jump)
     # When everything is done, release the capture
     cap.release()
     cv2.destroyAllWindows()
@@ -80,5 +80,5 @@ if __name__ == '__main__':
     args = parse_args()
     video_path = args.video_path
     subdirectory = args.subdirectory
-    n_seconds = int(args.n_seconds)
+    n_step = int(args.n_step)
     main()

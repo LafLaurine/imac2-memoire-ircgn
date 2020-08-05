@@ -127,7 +127,7 @@ def get_real_images(df, size, total):
     for i in range(0, size):
         file = cur_files.iloc[i]
         print(file)
-        img_uri = '../extraction/extracted_faces/Pierre/' + file.File_name
+        img_uri = '../extraction/extracted_faces/' + file.File_name
         img = cv2.imread(img_uri)
         img = cv2.resize(img, (SPATIAL_DIM, SPATIAL_DIM))
         img = np.flip(img, axis=2)

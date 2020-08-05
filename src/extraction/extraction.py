@@ -1,6 +1,7 @@
 import argparse
 import numpy as np
 import cv2
+import os
 import face_alignment
 import pathlib
 
@@ -23,58 +24,61 @@ def main():
 
     # Initialize the face alignment tracker
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, flip_input=True,  device='cpu')
-    cap = cv2.VideoCapture(video_path)
-    ret, frame = cap.read()
-    step = n_step
-    fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
-    jump = 0
-
-    while ret:
-        frameId = int(round(cap.get(1)))
+    if os.path.isfile(video_path):
+        cap = cv2.VideoCapture(video_path)
         ret, frame = cap.read()
-        # Run the face alignment tracker
-        if(ret):
-            imagePoints = fa.get_landmarks_from_image(frame)
-            if(imagePoints is not None):
-                imagePoints = imagePoints[0]
+        step = n_step
+        fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
+        jump = 0
 
-                # Compute the Anchor Landmarks
-                # This ensures the eyes and chin will not move within the chip
-                rightEyeMean = np.mean(imagePoints[36:42], axis=0)
-                leftEyeMean  = np.mean(imagePoints[42:47], axis=0)
-                middleEye    = (rightEyeMean + leftEyeMean) * 0.5
-                chin         = imagePoints[8]
+        while ret:
+            frameId = int(round(cap.get(1)))
+            ret, frame = cap.read()
+            # Run the face alignment tracker
+            if(ret):
+                imagePoints = fa.get_landmarks_from_image(frame)
+                if(imagePoints is not None):
+                    imagePoints = imagePoints[0]
 
-                # Compute the chip center and up/side vectors
-                mean = ((middleEye * 3) + chin) * 0.25
-                centered = imagePoints - mean 
-                rightVector = (leftEyeMean - rightEyeMean)
-                upVector    = (chin        - middleEye)
+                    # Compute the Anchor Landmarks
+                    # This ensures the eyes and chin will not move within the chip
+                    rightEyeMean = np.mean(imagePoints[36:42], axis=0)
+                    leftEyeMean  = np.mean(imagePoints[42:47], axis=0)
+                    middleEye    = (rightEyeMean + leftEyeMean) * 0.5
+                    chin         = imagePoints[8]
 
-                # Divide by the length ratio to ensure a square aspect ratio
-                rightVector /= np.linalg.norm(rightVector) / np.linalg.norm(upVector)
+                    # Compute the chip center and up/side vectors
+                    mean = ((middleEye * 3) + chin) * 0.25
+                    centered = imagePoints - mean 
+                    rightVector = (leftEyeMean - rightEyeMean)
+                    upVector    = (chin        - middleEye)
 
-                # Compute the corners of the facial chip
-                imageCorners = np.float32([(mean + ((-rightVector - upVector)))[:2],
-                                        (mean + (( rightVector - upVector)))[:2],
-                                        (mean + ((-rightVector + upVector)))[:2],
-                                        (mean + (( rightVector + upVector)))[:2]])
+                    # Divide by the length ratio to ensure a square aspect ratio
+                    rightVector /= np.linalg.norm(rightVector) / np.linalg.norm(upVector)
 
-                # Compute the Perspective Homography and Extract the chip from the image
-                chipMatrix = cv2.getPerspectiveTransform(imageCorners, chipCorners)
-                chip = cv2.warpPerspective(frame, chipMatrix, (chipSize, chipSize))
-        
-            #if frameId % multiplier == 0:
-            print("Saving face... %d" % frameId)
-            path = pathlib.Path('extracted_faces/'+subdirectory).mkdir(parents=True, exist_ok=True) 
-            imageName = "00000%d.jpg" % frameId
-            cv2.imwrite('extracted_faces/'+subdirectory+'/'+imageName, chip)
-            if step != 0:
-                jump = jump + (step*fps)
-                cap.set(1,jump)
-    # When everything is done, release the capture
-    cap.release()
-    cv2.destroyAllWindows()
+                    # Compute the corners of the facial chip
+                    imageCorners = np.float32([(mean + ((-rightVector - upVector)))[:2],
+                                            (mean + (( rightVector - upVector)))[:2],
+                                            (mean + ((-rightVector + upVector)))[:2],
+                                            (mean + (( rightVector + upVector)))[:2]])
+
+                    # Compute the Perspective Homography and Extract the chip from the image
+                    chipMatrix = cv2.getPerspectiveTransform(imageCorners, chipCorners)
+                    chip = cv2.warpPerspective(frame, chipMatrix, (chipSize, chipSize))
+            
+                #if frameId % multiplier == 0:
+                print("Saving face... %d" % frameId)
+                path = pathlib.Path('extracted_faces/'+subdirectory).mkdir(parents=True, exist_ok=True) 
+                imageName = "00000%d.jpg" % frameId
+                cv2.imwrite('extracted_faces/'+subdirectory+'/'+imageName, chip)
+                if step != 0:
+                    jump = jump + (step*fps)
+                    cap.set(1,jump)
+        # When everything is done, release the capture
+        cap.release()
+        cv2.destroyAllWindows()
+    else:
+        print("Not a good file")
 
 if __name__ == '__main__':
     args = parse_args()

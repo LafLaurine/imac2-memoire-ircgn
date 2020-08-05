@@ -27,7 +27,6 @@ def perspective_trans(imagePoints,frame):
     #key_landmarks[3,:] = key_landmarks_nose
     K = np.delete(key_landmarks,2,1)
     #savetxt('key_landmarks.csv',K, delimiter=',')
-    print("hallo")
     pts1 = np.float32(loadtxt('key_landmarks.csv', delimiter=','))
     pts2 = np.float32(K)
 

@@ -29,13 +29,14 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def draw(frame, imagePoints):
+def draw(filename, frame, imagePoints):
     # 2D-Plot
     plot_style = dict(marker='o',
                     markersize=4,
                     linestyle='-',
                     lw=2)
-
+    if(imagePoints is None):
+        os.remove(directory_path+"/"+filename)
     if(imagePoints is not None):
         perspective_trans(imagePoints,frame)
         distancelips = get_distance_lips()
@@ -60,16 +61,16 @@ def load_images_from_folder(folder):
         img = cv2.imread(os.path.join(folder,filename))
         if img is not None:
             images.append(img)
-    return images
+    return filename, images
 
 def main():
-    images = load_images_from_folder(directory_path)
+    filename, images = load_images_from_folder(directory_path)
     length = len(images)
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cpu', flip_input=False, face_detector='sfd')
     for i in range(length):
         frame = images[i]
         imagePoints = detect_landmarks(frame, fa)
-        draw(frame,imagePoints)
+        draw(filename, frame,imagePoints)
         expr = get_expression(frame)
         if(expr):
             with open(directory_path+"/expression.txt", "ab") as f:

@@ -39,9 +39,14 @@ def draw(frame, imagePoints):
     if(imagePoints is not None):
         perspective_trans(imagePoints,frame)
         distancelips = get_distance_lips()
-        print('distance lips = ' ,distancelips)
+        if(distancelips):
+            with open(directory_path+"/lips_dist.txt", "ab") as f:
+                np.savetxt(f, [distancelips])
         N,Q,R = get_rotation_matrix(imagePoints)
-
+        (theta, phi, psi) = rotationMatrixToEulerAngles(Q) * 180 / np.pi
+        if((theta, phi, psi)):
+            with open(directory_path+"/euler_angles.txt", "ab") as f:
+                    np.savetxt(f, [[theta,phi,psi]])
         x_axis = Q[:,0]
         y_axis = Q[:,1]
         z_axis = Q[:,2]
@@ -65,7 +70,10 @@ def main():
         frame = images[i]
         imagePoints = detect_landmarks(frame, fa)
         draw(frame,imagePoints)
-        get_expression(frame)   
+        expr = get_expression(frame)
+        if(expr):
+            with open(directory_path+"/expression.txt", "ab") as f:
+                np.savetxt(f, [expr],  delimiter=' ')   
     
 if __name__ == '__main__':
     args = parse_args()

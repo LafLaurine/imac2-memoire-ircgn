@@ -27,10 +27,7 @@ def get_distance_lips():
         y_upper_lips_center = imagePoints[0][62][1]
         y_lower_lips_center = imagePoints[0][66][1]
         distance = math.sqrt((x_lower_lips_center - x_upper_lips_center)**2 +(y_lower_lips_center - y_upper_lips_center)**2)
-        # writing to txt file
-        with open("../src/lips_dist.txt", "ab") as f:
-            np.savetxt(f, [distance])
-        return (distance)
+        return distance
 
     
     

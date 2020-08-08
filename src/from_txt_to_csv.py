@@ -1,33 +1,36 @@
 import csv
+import pandas as pd
+import os
+import argparse
 import numpy as np
-import collections
-import sys
-from os import listdir
-from os.path import isfile, join
 from glob import glob
 
-directories = glob("extraction/extracted_faces/*/")
-directories.sort()
-files = []
-length = []
-count = 0
+## Get arguments from user
+def parse_args():
+    """Parse input arguments."""
+    parser = argparse.ArgumentParser(description='Create CSV')
+    parser.add_argument('--directory', dest='directory_path', help='Path of directory')
+    args = parser.parse_args()
+    return args
 
-for directory in directories:
-    onlyfiles = [f for f in listdir(directory) if f.endswith(".jpg") if isfile(join(directory, f))]
-    onlyfiles.sort()
-    files.append(onlyfiles)
-    files.sort()
-    col_lips = np.float32(np.loadtxt(directory+'/lips_dist.txt', delimiter=','))
-    col_angles = np.float32(np.loadtxt(directory+'/euler_angles.txt'))
-    col_expression = np.float32(np.loadtxt(directory+'/expression.txt'))
-    length.append(len(col_lips))
+args = parse_args()
+directory_path = args.directory_path
+onlyfiles = glob(directory_path+'/*.jpg')
+onlyfiles.sort()
 
-    with open("all_data.csv", 'w') as outfile:  
-        # creating a csv writer object  
-        csvwriter = csv.writer(outfile)
-        csvwriter.writerow(['File_name','Lips_distance', 'Euler\'s_angles','Expression'])
-        for i in range(length[count]):
-            # Add the data row
-            csvwriter.writerow(['00000'+str(i+1)+'.jpg',col_lips[i] ,col_angles[i] ,col_expression[i]])
-    count = count + 1
-    print(length)
+col_lips = np.float32(np.loadtxt(directory_path+'/lips_dist.txt', delimiter=','))
+col_angles = np.float32(np.loadtxt(directory_path+'/euler_angles.txt'))
+col_expression = np.float32(np.loadtxt(directory_path+'/expression.txt'))
+
+base=os.path.basename(directory_path)
+
+with open('csv/'+base+'.csv', 'w') as outfile:  
+    # creating a csv writer object  
+    csvwriter = csv.writer(outfile)
+    csvwriter.writerow(['File_name','Lips_distance', 'Euler\'s_angles','Expression'])
+    for i in range(len(col_lips)):
+        csvwriter.writerow([onlyfiles[i],col_lips[i],col_angles[i],col_expression[i]])
+
+all_files = glob("csv/*.csv")
+combined_csv = pd.concat([pd.read_csv(f) for f in all_files ])
+combined_csv.to_csv( "all_data.csv", index=False)

@@ -79,7 +79,7 @@ FILTER_SIZE = 5
 # number of filters in conv layer
 NET_CAPACITY = 16
 # batch size
-BATCH_SIZE_GAN = 2
+BATCH_SIZE_GAN = 32
 # interval for displaying generated images
 PROGRESS_INTERVAL = 80 
 # directory for storing generated images
@@ -127,7 +127,7 @@ def get_real_images(df, size, total):
     for i in range(0, size):
         file = cur_files.iloc[i]
         print(file)
-        img_uri = '../extraction/extracted_faces/' + file.File_name
+        img_uri = '../'+file.File_name
         img = cv2.imread(img_uri)
         img = cv2.resize(img, (SPATIAL_DIM, SPATIAL_DIM))
         img = np.flip(img, axis=2)
@@ -173,7 +173,7 @@ def run_training(generator, discriminator, gan, df=df_dataset, start_it=0, num_e
               imgs_real = get_real_images(df, num_vis, TOTAL_SAMPLES)
               noise = np.random.randn(num_vis, LATENT_DIM_GAN)
               imgs_fake = generator.predict(noise)
-              for obj_plot in [imgs_fake, imgs_real]:
+              for obj_plot in [imgs_fake]:
                   plt.figure(figsize=(num_vis * 3, 3))
                   for b in range(num_vis):
                       disc_score = float(discriminator.predict(np.expand_dims(obj_plot[b], axis=0))[0])
@@ -213,5 +213,5 @@ def run_training(generator, discriminator, gan, df=df_dataset, start_it=0, num_e
 genrator_faces, discriminator_faces, gan_faces = run_training(genrator_faces, 
                                                                discriminator_faces, 
                                                                gan_faces, 
-                                                               num_epochs=100, 
+                                                               num_epochs=1000, 
                                                                df=df_dataset)

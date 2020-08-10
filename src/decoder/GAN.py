@@ -86,16 +86,23 @@ PROGRESS_INTERVAL = 80
 ROOT_DIR = 'visualization'
 if not os.path.isdir(ROOT_DIR):
     os.mkdir(ROOT_DIR)
+
+saved = False
     
 def construct_models(verbose=False):
-    ### discriminator
-    discriminator = build_discriminator(NET_CAPACITY, SPATIAL_DIM, FILTER_SIZE)
-    # compile discriminator
-    discriminator.compile(loss='binary_crossentropy', optimizer=Adam(lr=0.0002), metrics=['mae'])
+    if not saved:
+        ### discriminator
+        discriminator = build_discriminator(NET_CAPACITY, SPATIAL_DIM, FILTER_SIZE)
+        # compile discriminator
+        discriminator.compile(loss='binary_crossentropy', optimizer=Adam(lr=0.0002), metrics=['mae'])
 
-    ### generator
-    # do not compile generator
-    generator = build_generator(NET_CAPACITY, FILTER_SIZE, LATENT_DIM_GAN)
+        ### generator
+        # build generator
+        generator = build_generator(NET_CAPACITY, FILTER_SIZE, LATENT_DIM_GAN)
+    else:
+        discriminator = load_model('discriminatorTrained.h5')
+        discriminator.compile(loss='binary_crossentropy', optimizer=Adam(lr=0.0002), metrics=['mae'])
+        generator = load_model('generatorTrained.h5')
 
     ### DCGAN 
     gan = Sequential()
@@ -108,10 +115,13 @@ def construct_models(verbose=False):
         generator.summary()
         discriminator.summary()
         gan.summary()
-        
+
+    discriminator.save("discriminatorTrained.h5")
+    generator.save("generatorTrained.h5")
+    save = True
     return generator, discriminator, gan
   
-genrator_faces, discriminator_faces, gan_faces = construct_models(verbose=True)
+generator_faces, discriminator_faces, gan_faces = construct_models(verbose=True)
 
 
 # number of discriminator updates per alternating training iteration
@@ -126,7 +136,6 @@ def get_real_images(df, size, total):
     X = np.empty(shape=(size, SPATIAL_DIM, SPATIAL_DIM, 3))
     for i in range(0, size):
         file = cur_files.iloc[i]
-        print(file)
         img_uri = '../'+file.File_name
         img = cv2.imread(img_uri)
         img = cv2.resize(img, (SPATIAL_DIM, SPATIAL_DIM))
@@ -137,7 +146,7 @@ def get_real_images(df, size, total):
 
 
 # function for training a GAN
-def run_training(generator, discriminator, gan, df=df_dataset, start_it=0, num_epochs=10, 
+def run_training(generator, discriminator, gan, df=df_dataset, start_it=0, num_epochs=5, 
                  get_real_images=get_real_images):
 
   # list for storing loss
@@ -168,7 +177,7 @@ def run_training(generator, discriminator, gan, df=df_dataset, start_it=0, num_e
 
           # display some fake images for visual control of convergence
           if total_it % PROGRESS_INTERVAL == 0:
-              plt.figure(figsize=(5,2))
+              #plt.figure(figsize=(5,2))
               num_vis = min(BATCH_SIZE_GAN, 5)
               imgs_real = get_real_images(df, num_vis, TOTAL_SAMPLES)
               noise = np.random.randn(num_vis, LATENT_DIM_GAN)
@@ -181,8 +190,7 @@ def run_training(generator, discriminator, gan, df=df_dataset, start_it=0, num_e
                       plt.title(str(round(disc_score, 3)))
                       plt.imshow(obj_plot[b] * 0.5 + 0.5) 
                   if obj_plot is imgs_fake:
-                      plt.savefig(os.path.join(ROOT_DIR, str(total_it).zfill(10) + '.jpg'), format='jpg', bbox_inches='tight')
-                  '''plt.show()'''  
+                      plt.savefig(os.path.join(ROOT_DIR, str(total_it) + '.jpg'), format='jpg', bbox_inches='tight')
 
           #### Generator training loop ####
           loss = 0
@@ -203,15 +211,13 @@ def run_training(generator, discriminator, gan, df=df_dataset, start_it=0, num_e
       print('Epoch', epoch)
       avg_loss_discriminator.append(np.mean(loss_discriminator))
       avg_loss_generator.append(np.mean(loss_generator))
-      '''plt.plot(range(len(avg_loss_discriminator)), avg_loss_discriminator)
-      plt.plot(range(len(avg_loss_generator)), avg_loss_generator)
-      plt.legend(['discriminator loss', 'generator loss'])
-      plt.show()'''
+      print('Avg loss discriminator', avg_loss_discriminator)
+      print('Avg loss generator', avg_loss_generator)
 
   return generator, discriminator, gan
 
-genrator_faces, discriminator_faces, gan_faces = run_training(genrator_faces, 
+generator_faces, discriminator_faces, gan_faces = run_training(generator_faces, 
                                                                discriminator_faces, 
                                                                gan_faces, 
-                                                               num_epochs=1000, 
+                                                               num_epochs=5, 
                                                                df=df_dataset)

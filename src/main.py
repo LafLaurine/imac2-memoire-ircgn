@@ -12,6 +12,7 @@ import numpy as np
 from get_rotation_matrix import *
 from transform_image import *
 from get_distance_lips import *
+from mask import create_mask
 
 import sys
 sys.path.append('../')
@@ -30,11 +31,6 @@ def parse_args():
     return args
 
 def draw(filename, frame, imagePoints):
-    # 2D-Plot
-    plot_style = dict(marker='o',
-                    markersize=4,
-                    linestyle='-',
-                    lw=2)
     if(imagePoints is None):
         os.remove(directory_path+"/"+filename)
     if(imagePoints is not None):
@@ -70,8 +66,10 @@ def main():
     for i in range(length):
         frame = images[i]
         imagePoints = detect_landmarks(frame, fa)
-        draw(filename, frame,imagePoints)
+        draw(filename, frame, imagePoints)
         expr = get_expression(frame)
+        result = create_mask(frame)
+        cv2.imwrite(directory_path+'/mask/result'+str(i)+'.jpg',result)
         if(expr):
             with open(directory_path+"/expression.txt", "ab") as f:
                 np.savetxt(f, [expr],  delimiter=' ')   

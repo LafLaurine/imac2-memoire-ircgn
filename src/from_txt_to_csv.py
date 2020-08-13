@@ -9,7 +9,7 @@ from glob import glob
 def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='Create CSV')
-    parser.add_argument('--directory', dest='directory_path', help='Path of directory')
+    parser.add_argument('--directory', dest='directory_path', help='Path of directory', required=True)
     args = parser.parse_args()
     return args
 
@@ -22,7 +22,7 @@ col_lips = np.float32(np.loadtxt(directory_path+'/lips_dist.txt', delimiter=',')
 col_angles = np.float32(np.loadtxt(directory_path+'/euler_angles.txt'))
 col_expression = np.float32(np.loadtxt(directory_path+'/expression.txt'))
 col_center = np.float32(np.loadtxt(directory_path+'/center.txt'))
-col_bounding = np.float32(np.loadtxt(directory_path+'/bounding_boxe.txt'))
+col_bounding = np.float32(np.loadtxt(directory_path+'/bounding_box.txt'))
 
 
 
@@ -31,7 +31,7 @@ base=os.path.basename(directory_path)
 with open('csv/'+base+'.csv', 'w') as outfile:  
     # creating a csv writer object  
     csvwriter = csv.writer(outfile)
-    csvwriter.writerow(['File_name','Lips_distance', 'Euler\'s_angles','Expression','Center','Bounding_boxe'])
+    csvwriter.writerow(['File_name','Lips_distance', 'Euler\'s_angles','Expression','Center','Bounding_box'])
     for i in range(len(col_lips)):
         csvwriter.writerow([onlyfiles[i],col_lips[i],col_angles[i],col_expression[i],col_center[i],col_bounding[i]])
 

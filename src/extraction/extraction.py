@@ -8,9 +8,9 @@ import pathlib
 def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='Detecting landmarks')
-    parser.add_argument('--video', dest='video_path', help='Path of the video')
-    parser.add_argument('--subdirectory', dest='subdirectory', help='Path of the subdirectory')
-    parser.add_argument('--n_step', dest='n_step', help='Extract frames every n step')
+    parser.add_argument('--video', dest='video_path', help='Path of the video', required=True)
+    parser.add_argument('--subdirectory', dest='subdirectory', help='Path of the subdirectory', required=True)
+    parser.add_argument('--n_step', dest='n_step', help='Extract frames every n step', default=2, required=True)
     args = parser.parse_args()
     return args
 
@@ -69,9 +69,9 @@ def main():
                     chip = cv2.warpPerspective(frame, chipMatrix, (chipSize, chipSize))
                 x_center = ((mean-256)/512)[0]
                 y_center = ((mean-256)/512)[1]
-                with open(subdirectory+"/center.txt", "ab") as f:
+                with open("extracted_faces/"+subdirectory+"/center.txt", "ab") as f:
                     np.savetxt(f, [[x_center,y_center]])
-                with open(subdirectory+"/bounding_boxe.txt", "ab") as f:
+                with open("extracted_faces/"+subdirectory+"/bounding_box.txt", "ab") as f:
                     np.savetxt(f, [[512/max(width,hight)]])    
                 #if frameId % multiplier == 0:
                 print("Saving face... %d" % frameId)

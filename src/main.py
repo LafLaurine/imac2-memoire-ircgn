@@ -26,7 +26,7 @@ f_list = []
 def parse_args():
     """Parse input arguments."""
     parser = argparse.ArgumentParser(description='Detecting landmarks')
-    parser.add_argument('--directory', dest='directory_path', help='Path of directory')
+    parser.add_argument('--directory', dest='directory_path', help='Path of directory', required=True)
     args = parser.parse_args()
     return args
 
@@ -69,7 +69,8 @@ def main():
         draw(filename, frame, imagePoints)
         expr = get_expression(frame)
         result = create_mask(frame)
-        cv2.imwrite(directory_path+'/mask/result'+str(i)+'.jpg',result)
+        dirpath = os.path.split(os.path.split(directory_path)[0])[1]
+        cv2.imwrite('extraction/masks/'+dirpath+str(i)+'.jpg',result)
         if(expr):
             with open(directory_path+"/expression.txt", "ab") as f:
                 np.savetxt(f, [expr],  delimiter=' ')   

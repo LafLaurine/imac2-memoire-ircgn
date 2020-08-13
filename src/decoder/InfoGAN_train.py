@@ -5,21 +5,13 @@ from numpy import expand_dims
 from numpy import hstack
 from numpy.random import randn
 from numpy.random import randint
-from keras.optimizers import Adam
-from keras.initializers import RandomNormal
-from keras.utils import to_categorical
-from keras.models import Model, Sequential
-from keras.layers import Input
-from keras.layers import Dense, Dropout
-from keras.layers import Reshape
-from keras.layers import Flatten
-from keras.layers import Conv2D, UpSampling2D
-from keras.layers import Conv2DTranspose
-from keras.layers import LeakyReLU
-from keras.layers import BatchNormalization
-from keras.layers import Activation
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.initializers import RandomNormal
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.models import Model, Sequential
+from tensorflow.keras.layers import Input, Dense, Dropout, Reshape, Flatten, Conv2D, UpSampling2D, Conv2DTranspose, LeakyReLU, BatchNormalization,Activation
 from matplotlib import pyplot
-import keras.backend as K
+import tensorflow.keras.backend as K
 import numpy as np
 import pandas as pd
 import os
@@ -119,8 +111,6 @@ def get_real_images(df, size, total):
         file = cur_files.iloc[i]
         img_uri = '../'+file.File_name
         img = cv2.imread(img_uri)
-        img = np.flip(img, axis=2)
-        img = img.astype(np.float32) / 127.5 - 1.0
         X[i] = img
     return X
 

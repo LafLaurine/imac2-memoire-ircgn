@@ -30,6 +30,8 @@ def main():
         step = n_step
         fps = cap.get(cv2.CAP_PROP_FPS) # Gets the frames per second
         jump = 0
+        width = frame.shape[0]
+        hight = frame.shape[1]
 
         while ret:
             frameId = int(round(cap.get(1)))
@@ -65,7 +67,12 @@ def main():
                     # Compute the Perspective Homography and Extract the chip from the image
                     chipMatrix = cv2.getPerspectiveTransform(imageCorners, chipCorners)
                     chip = cv2.warpPerspective(frame, chipMatrix, (chipSize, chipSize))
-            
+                x_center = ((mean-256)/512)[0]
+                y_center = ((mean-256)/512)[1]
+                with open(subdirectory+"/center.txt", "ab") as f:
+                    np.savetxt(f, [[x_center,y_center]])
+                with open(subdirectory+"/bounding_boxe.txt", "ab") as f:
+                    np.savetxt(f, [[512/max(width,hight)]])    
                 #if frameId % multiplier == 0:
                 print("Saving face... %d" % frameId)
                 path = pathlib.Path('extracted_faces/'+subdirectory).mkdir(parents=True, exist_ok=True) 

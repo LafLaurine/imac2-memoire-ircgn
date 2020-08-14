@@ -10,7 +10,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Detecting landmarks')
     parser.add_argument('--video', dest='video_path', help='Path of the video', required=True)
     parser.add_argument('--subdirectory', dest='subdirectory', help='Path of the subdirectory', required=True)
-    parser.add_argument('--n_step', dest='n_step', help='Extract frames every n step', default=2, required=True)
+    parser.add_argument('--n_step', dest='n_step', help='Extract frames every n step * fps', default=0, required=True)
     args = parser.parse_args()
     return args
 

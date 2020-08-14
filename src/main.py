@@ -33,6 +33,7 @@ def parse_args():
 def draw(filename, frame, imagePoints):
     if(imagePoints is None):
         os.remove(directory_path+"/"+filename)
+        print("Deleted... %s", filename)
     if(imagePoints is not None):
         perspective_trans(imagePoints,frame)
         distancelips = get_distance_lips()
@@ -53,23 +54,27 @@ def draw(filename, frame, imagePoints):
 
 def load_images_from_folder(folder):
     images = []
+    filenames = []
     for filename in os.listdir(folder):
         img = cv2.imread(os.path.join(folder,filename))
         if img is not None:
             images.append(img)
-    return filename, images
+            filenames.append(filename)
+    return filenames, images
 
 def main():
-    filename, images = load_images_from_folder(directory_path)
+    filenames, images = load_images_from_folder(directory_path)
+    filenames.sort()
     length = len(images)
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cpu', flip_input=False, face_detector='sfd')
     for i in range(length):
         frame = images[i]
+        print(filenames[i])
         imagePoints = detect_landmarks(frame, fa)
-        draw(filename, frame, imagePoints)
+        draw(filenames[i], frame, imagePoints)
         expr = get_expression(frame)
         result = create_mask(frame)
-        dirpath = os.path.split(os.path.split(directory_path)[0])[1]
+        dirpath = os.path.split(os.path.split(directory_path)[1])[1]
         cv2.imwrite('extraction/masks/'+dirpath+str(i)+'.jpg',result)
         if(expr):
             with open(directory_path+"/expression.txt", "ab") as f:

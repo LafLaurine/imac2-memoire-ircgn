@@ -91,7 +91,6 @@ def construct_models(verbose=False):
         # compile discriminator
         discriminator.trainable = False
         discriminator.compile(loss='binary_crossentropy', optimizer=Adam(lr=0.0002), metrics=['mae'])
-        discriminator.summary()
         ### generator
         # build generator
         generator = build_generator(NET_CAPACITY, FILTER_SIZE, LATENT_DIM_GAN)

@@ -4,10 +4,6 @@ import math
 from numpy import *
 import numpy as np
 import matplotlib.pyplot as plt
-from skimage import data
-from skimage import transform
-from skimage import img_as_float
-from scipy import ndimage, misc
 
 from get_rotation_matrix import *
 

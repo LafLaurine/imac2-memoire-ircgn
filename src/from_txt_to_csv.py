@@ -15,7 +15,8 @@ def parse_args():
 
 args = parse_args()
 directory_path = args.directory_path
-onlyfiles = glob(directory_path+'/*.jpg')
+dirpath = os.path.split(os.path.split(directory_path)[1])[1]
+onlyfiles = glob('extraction/masks/'+dirpath+'*.jpg')
 onlyfiles.sort()
 
 col_lips = np.float32(np.loadtxt(directory_path+'/lips_dist.txt', delimiter=','))
@@ -23,8 +24,6 @@ col_angles = np.float32(np.loadtxt(directory_path+'/euler_angles.txt'))
 col_expression = np.float32(np.loadtxt(directory_path+'/expression.txt'))
 col_center = np.float32(np.loadtxt(directory_path+'/center.txt'))
 col_bounding = np.float32(np.loadtxt(directory_path+'/bounding_box.txt'))
-
-
 
 base=os.path.basename(directory_path)
 

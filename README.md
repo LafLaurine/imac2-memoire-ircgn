@@ -8,8 +8,8 @@ This school project is conducted by the [Institut de recherche criminelle de la 
 
 | Name | Author(s)|
 |--|--|
-| [Face-alignment](https://github.com/1adrianb/face-alignment) | Adrian Bulat |
-| [Facial Expression Recognition](https://github.com/WuJie1010/Facial-Expression-Recognition.Pytorch) | WuJie |
+| [Face-alignment](https://github.com/1adrianb/face-alignment) | Adrian Bulat and Georgios Tzimiropoulos |
+| [Facial Expression Recognition](https://github.com/WuJie1010/Facial-Expression-Recognition.Pytorch) | Wu Jie |
 
 ### Authors
 

@@ -1,1 +1,9 @@
 *__pycache__
+src/decoder/*.h5
+src/decoder/*.hdf5
+src/decoder/visualization/*
+dataset/standardize_pic/*.png
+src/extraction/__pycache__
+src/extraction/*.mp4
+src/extraction/extracted_faces/*/*.jpg
+src/extraction/masks/*.jpg

@@ -1,4 +1,0 @@
-__pycache__
-*.mp4
-extracted_faces/*/*.jpg
-masks/*.jpg

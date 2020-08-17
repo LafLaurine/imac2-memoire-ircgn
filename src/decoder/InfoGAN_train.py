@@ -123,7 +123,7 @@ def sample_generator_input(batch_size, num_classes=num_classes):
 
   return sampled_noise, sampled_labels
   
-def train(epochs, batch_size=2, sample_interval=50):
+def train(epochs, batch_size=4, sample_interval=50):
 	# Load the dataset
 	X_train = get_real_images(df_dataset, 16, TOTAL_SAMPLES)
 
@@ -159,7 +159,6 @@ def train(epochs, batch_size=2, sample_interval=50):
  
 def sample_images(epoch, num_classes=num_classes):
 	r, c = 10, 10
-	img = []
 	fig, axs = plt.subplots(r, c)
 	for i in range(c):
 		sampled_noise, _ = sample_generator_input(c)
@@ -169,11 +168,9 @@ def sample_images(epoch, num_classes=num_classes):
 		gen_imgs = 0.5 * gen_imgs + 0.5
 		for j in range(r):
 			axs[j,i].imshow(gen_imgs[j,:,:,0], cmap='gray')
-			img = gen_imgs[j,:,:,0]
 			axs[j,i].axis('off')
 			fig.savefig("%d.png" % epoch)
 	plt.close()
-	cv2.imwrite("%dbis.png" % epoch, img)
 
 optimizer = Adam(0.0002, 0.5)
 losses = ['binary_crossentropy',mutual_info_loss]
@@ -206,7 +203,7 @@ target_label = auxilliary(img)
 combined = Model(gen_input, [valid, target_label])
 combined.compile(loss=losses, optimizer=optimizer)
 
-train(epochs=10, batch_size=2, sample_interval=50)
+train(epochs=1000, batch_size=4, sample_interval=50)
 
 
 def save_model():

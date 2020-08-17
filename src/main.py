@@ -31,10 +31,7 @@ def parse_args():
     return args
 
 def draw(filename, frame, imagePoints):
-    if(imagePoints is None):
-        os.remove(directory_path+"/"+filename)
-        print("Deleted... %s", filename)
-    if(imagePoints is not None):
+    if(imagePoints):
         perspective_trans(imagePoints,frame)
         distancelips = get_distance_lips()
         if(distancelips):
@@ -51,6 +48,8 @@ def draw(filename, frame, imagePoints):
         imagePoints = imagePoints[0]        
         # compute the Mean-Centered-Scaled Points
         mean = np.mean(imagePoints, axis=0)
+    else:
+        os.remove(directory_path+"/"+filename)
 
 def load_images_from_folder(folder):
     images = []
@@ -72,13 +71,14 @@ def main():
         print(filenames[i])
         imagePoints = detect_landmarks(frame, fa)
         draw(filenames[i], frame, imagePoints)
-        expr = get_expression(frame)
-        result = create_mask(frame)
-        dirpath = os.path.split(os.path.split(directory_path)[1])[1]
-        cv2.imwrite('extraction/masks/'+dirpath+str(i)+'.jpg',result)
-        if(expr):
-            with open(directory_path+"/expression.txt", "ab") as f:
-                np.savetxt(f, [expr],  delimiter=' ')   
+        if(imagePoints):
+            expr = get_expression(frame)
+            result = create_mask(frame)
+            dirpath = os.path.split(os.path.split(directory_path)[1])[1]
+            cv2.imwrite('extraction/masks/'+dirpath+str(i)+'.jpg',result)
+            if(expr):
+                with open(directory_path+"/expression.txt", "ab") as f:
+                    np.savetxt(f, [expr],  delimiter=' ')
     
 if __name__ == '__main__':
     args = parse_args()

@@ -36,6 +36,6 @@ def perspective_trans(imagePoints,frame):
 
     directory = '../dataset/standardize_pic'
     os.chdir(directory) 
-    cv2.imwrite('standardize.png',cv2.cvtColor(dst, cv2.COLOR_RGB2BGR))
+    cv2.imwrite('standardize.png',dst)
     directory = '../../src'
     os.chdir(directory) 

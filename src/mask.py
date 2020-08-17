@@ -7,7 +7,7 @@ def create_mask(image):
     width = image.shape[0]
     hight = image.shape[1]
     center_coordinates = ( int(width/2),int(hight/2)) 
-    axesLength = (200, 250)
+    axesLength = (190, 190)
     angle = 0
     startAngle = 0
     endAngle = 360
@@ -23,5 +23,6 @@ def create_mask(image):
     result = ROI[y:y+h,x:x+w]
     mask = mask[y:y+h,x:x+w]
     result[mask==0] = (0,0,0)
+    resize_image = cv2.resize(result, (512,512), interpolation=cv2.INTER_CUBIC)
 
-    return result
+    return resize_image

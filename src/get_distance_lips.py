@@ -5,12 +5,12 @@ import face_alignment
 from numpy import *
 import numpy as np
 import matplotlib.pyplot as plt
+
 from get_rotation_matrix import *
 
 def get_distance_lips():
     image_path = "../dataset/standardize_pic/standardize.png"
     frame = cv2.imread(image_path,1)
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
     # Get landmarks of the input image
     fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cpu', flip_input=False, face_detector='sfd')

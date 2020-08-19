@@ -20,27 +20,28 @@ import cv2
 
 
 def draw(x_test,decoded_imgs):
-    n = 10
+    n = 1
     plt.figure(figsize=(20, 4))
     for i in range(n):
         # display original
         ax = plt.subplot(2, n, i+1)
-        plt.imshow(x_test[i].reshape(28, 28))
+        plt.imshow(x_test[i])
         plt.gray()
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
-
+        plt.show()
+    for j in range(n):
         # display reconstruction
         ax = plt.subplot(2, n, i + n)
-        plt.imshow(decoded_imgs[i].reshape(28, 28))
+        plt.imshow(decoded_imgs[i])
         plt.gray()
         ax.get_xaxis().set_visible(False)
         ax.get_yaxis().set_visible(False)
-    plt.show()
+        plt.show()
 
 df_dataset = pd.read_csv('../all_data.csv')
 TOTAL_SAMPLES = df_dataset.shape[0]
-BATCH_SIZE = 4
+BATCH_SIZE = 128
 CODE_SIZE = 100
 
 def get_real_images(df, size, total):
@@ -54,7 +55,7 @@ def get_real_images(df, size, total):
         X[i] = im_rgb
     return X
 
-class ConvolutionalAutoEncoder:
+class ConvolutionalDecoder:
     def main():
         input_img = Input(shape=(512, 512, 3))
         x = Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
@@ -62,13 +63,11 @@ class ConvolutionalAutoEncoder:
         x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
         x = UpSampling2D((2, 2))(x)
         x = Conv2D(8, (3, 3), activation='relu', padding='same')(x)
-        x = UpSampling2D((2, 2))(x)
-        x = Conv2D(16, (3, 3), activation='relu')(x)
-        x = UpSampling2D((2, 2))(x)
-        decoded = Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
+        decoded = Conv2D(3, (3, 3), activation='sigmoid', padding='same')(x)
 
         decoder = Model(input_img, decoded)
         decoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+        decoder.summary()
 
         X = get_real_images(df_dataset, BATCH_SIZE, TOTAL_SAMPLES)
         X = X.astype('float32') / 255.0 - 0.5
@@ -76,13 +75,12 @@ class ConvolutionalAutoEncoder:
         x_train = np.reshape(x_train, (len(x_train), 512, 512, 3))
         x_test = np.reshape(x_test, (len(x_test), 512, 512, 3))
         decoder.fit(x_train, x_train,
-                    epochs=3,
-                    batch_size=128,
+                    epochs=20,
+                    batch_size=BATCH_SIZE,
                     shuffle=True,
                     validation_data=(x_test, x_test))
-        
         decoded_imgs = decoder.predict(x_test)
         draw(x_test,decoded_imgs)
 
 
-ConvolutionalAutoEncoder.main()
+ConvolutionalDecoder.main()

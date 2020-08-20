@@ -135,7 +135,27 @@ def visualize_A(img,encoder,decoder):
     plt.subplot(1,3,3)
     plt.title("Reconstructed")
     show_image(reco)
-    plt.show()    
+    plt.show()   
+
+
+def visualize_A_with_B(img,encoder,decoder):
+    """Draws original, encoded and decoded images"""
+    # img[None] will have shape of (1, 512, 512, 3) which is the same as the model input
+    code = encoder_A.predict(img[None])[0]
+    reco = decoder_B.predict(code[None])[0]
+
+    plt.subplot(1,3,1)
+    plt.title("Original")
+    show_image(img)
+
+    plt.subplot(1,3,2)
+    plt.title("Code")
+    plt.imshow(code.reshape([code.shape[-1]//2,-1]))
+
+    plt.subplot(1,3,3)
+    plt.title("Reconstructed")
+    show_image(reco)
+    plt.show()     
 
 def apply_gaussian_noise(X, sigma=0.1):
     noise = np.random.normal(loc=0.0, scale=sigma, size=X.shape)
@@ -182,6 +202,10 @@ for i in range(200):
 
 A_test_noise = apply_gaussian_noise(A_test)
 
-for i in range(8):
+for i in range(3):
     img = A_test[i]
     visualize_A(img,encoder_A,decoder_A)
+
+for i in range(3):
+    img = A_test[i]
+    visualize_A_with_B(img,encoder_A,decoder_B)    

@@ -30,7 +30,7 @@ base=os.path.basename(directory_path)
 with open('csv/'+base+'.csv', 'w') as outfile:  
     # creating a csv writer object  
     csvwriter = csv.writer(outfile)
-    csvwriter.writerow(['File_name','Lips_distance', 'Euler\'s_angles','Expression','Center','Bounding_box'])
+    csvwriter.writerow(['File_name','Lips_distance', 'Euler_angles','Expression','Center','Bounding_box'])
     for i in range(len(col_lips)):
         csvwriter.writerow([onlyfiles[i],col_lips[i],col_angles[i],col_expression[i],col_center[i],col_bounding[i]])
 

@@ -1,4 +1,4 @@
-File_name,Lips_distance,Euler's_angles,Expression,Center,Bounding_box
+File_name,Lips_distance,Euler_angles,Expression,Center,Bounding_box
 extraction/masks/Laurine10.jpg,3.0,[  -9.417216  -10.011051 -179.9331  ],"[0.8342733  0.00175106 0.06550365 0.00914013 0.02754    0.00704738
  0.05474453]",[ 0.7974365  -0.06760252],0.4
 extraction/masks/Laurine11.jpg,14.0,[  -7.1515617    1.4686102 -178.53989  ],"[0.0063408  0.00099695 0.01583727 0.66507554 0.00095691 0.26663026

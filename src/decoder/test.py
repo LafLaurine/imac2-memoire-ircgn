@@ -9,12 +9,12 @@ import tensorflow.keras.backend as K
 import tensorflow as tf
 
 df_dataset = pd.read_csv('../all_data.csv')
-TOTAL_SAMPLES = df_dataset.shape[0]
 BATCH_SIZE = 80
 CODE_SIZE = 3
 
-def get_real_images(df, size, total):
-    cur_files = df.sample(frac=1).iloc[0:size]
+cur_files = df_dataset.sample(frac=1).iloc[0:BATCH_SIZE]
+
+def get_real_images(df, size):
     X = np.empty(shape=(size, 512, 512, 3))
     for i in range(0, size):
         file = cur_files.iloc[i]
@@ -24,22 +24,23 @@ def get_real_images(df, size, total):
         X[i] = im_rgb
     return X
 
-def get_real_data(df, size, total):
-    cur_files = df.sample(frac=1).iloc[0:size]
+def get_real_data(df, size):
     X = np.empty(shape=(size, CODE_SIZE , 1))
     for i in range(0, size):
         file = cur_files.iloc[i]
         lips = file.Lips_distance
         angles = file.Euler_angles
         expression = file.Expression
+        print(angles)
         center = file.Center
         box = file.Bounding_box
+        #for angles, center and expression "cannot convert string to float"
         X[i][0] = lips
-        X[i][1] = np.sin(i)
+        X[i][1] = np.sin(1)
         X[i][2] = box
     return X 
 
-X = get_real_images(df_dataset, BATCH_SIZE, TOTAL_SAMPLES)
+X = get_real_images(df_dataset, BATCH_SIZE)
 X = X.astype('float32') / 255.0 - 0.5
 print(X.max(), X.min())
 
@@ -79,7 +80,7 @@ print(autoencoder_B.summary())
 
 ###################  DATA AUTOENCODER
 
-A = get_real_data(df_dataset, BATCH_SIZE, TOTAL_SAMPLES)
+A = get_real_data(df_dataset, BATCH_SIZE)
 print('A           aaaaaaaaaaaaaaaaaaaa :: \n')
 print(A)
 print('\n')

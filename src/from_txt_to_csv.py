@@ -19,12 +19,11 @@ dirpath = os.path.split(os.path.split(directory_path)[1])[1]
 onlyfiles = glob('extraction/masks/'+dirpath+'*.jpg')
 onlyfiles.sort()
 
-col_lips = np.float32(np.loadtxt(directory_path+'/lips_dist.txt', delimiter=','))
-col_angles = np.float32(np.loadtxt(directory_path+'/euler_angles.txt'))
-col_expression = np.float32(np.loadtxt(directory_path+'/expression.txt'))
-col_center = np.float32(np.loadtxt(directory_path+'/center.txt'))
-col_bounding = np.float32(np.loadtxt(directory_path+'/bounding_box.txt'))
-
+col_lips = np.genfromtxt(directory_path+'/lips_dist.txt')
+col_angles = np.genfromtxt(directory_path+'/euler_angles.txt')
+col_expression = np.genfromtxt(directory_path+'/expression.txt')
+col_center = np.genfromtxt(directory_path+'/center.txt')
+col_bounding = np.genfromtxt(directory_path+'/bounding_box.txt')
 base=os.path.basename(directory_path)
 
 with open('csv/'+base+'.csv', 'w') as outfile:  
@@ -32,7 +31,28 @@ with open('csv/'+base+'.csv', 'w') as outfile:
     csvwriter = csv.writer(outfile)
     csvwriter.writerow(['File_name','Lips_distance', 'Euler_angles','Expression','Center','Bounding_box'])
     for i in range(len(col_lips)):
-        csvwriter.writerow([onlyfiles[i],col_lips[i],col_angles[i],col_expression[i],col_center[i],col_bounding[i]])
+        nb = col_angles[i]
+        nb[0] = round(nb[0],2)
+        nb[1] = round(nb[1],2)
+        nb[2] = round(nb[2],2)
+        input_angles = [nb[0],nb[1],nb[2]]
+
+        nbExpr = col_expression[i]
+        nbExpr[0] = round(nbExpr[0],2)
+        nbExpr[1] = round(nbExpr[1],2)
+        nbExpr[2] = round(nbExpr[2],2)
+        nbExpr[3] = round(nbExpr[3],2)
+        nbExpr[4] = round(nbExpr[4],2)
+        nbExpr[5] = round(nbExpr[5],2)
+        nbExpr[6] = round(nbExpr[6],2)
+        input_expr = [nbExpr[0],nbExpr[1],nbExpr[2],nbExpr[3],nbExpr[4],nbExpr[5],nbExpr[6]]
+
+        nbCenter = col_center[i]
+        nbCenter[0] = round(nbCenter[0],2)
+        nbCenter[1] = round(nbCenter[1],2)
+        input_center = [nbCenter[0],nbCenter[1]]
+
+        csvwriter.writerow([onlyfiles[i],col_lips[i],input_angles,input_expr,input_center,col_bounding[i]])
 
 all_files = glob("csv/*.csv")
 combined_csv = pd.concat([pd.read_csv(f) for f in all_files ])

@@ -40,8 +40,12 @@ def draw(filename, frame, imagePoints):
         N,Q,R = get_rotation_matrix(imagePoints)
         (theta, phi, psi) = rotationMatrixToEulerAngles(Q) * 180 / np.pi
         if((theta, phi, psi)):
-            with open(directory_path+"/euler_angles.txt", "ab") as f:
-                    np.savetxt(f, [[theta,phi,psi]])
+            with open(directory_path+"/theta.txt", "ab") as f:
+                    np.savetxt(f, [theta])
+            with open(directory_path+"/phi.txt", "ab") as f:
+                    np.savetxt(f, [phi]) 
+            with open(directory_path+"/psi.txt", "ab") as f:
+                    np.savetxt(f, [psi])               
         x_axis = Q[:,0]
         y_axis = Q[:,1]
         z_axis = Q[:,2]
@@ -73,14 +77,34 @@ def main():
         draw(filenames[i], frame, imagePoints)
         if(imagePoints):
             expr = get_expression(frame)
+            expression1 = expr[0]
+            expression2 = expr[1]
+            expression3 = expr[2]
+            expression4 = expr[3]
+            expression5 = expr[4]
+            expression6 = expr[5]
+            expression7 = expr[6]
             result = create_mask(frame)
             dirpath = os.path.split(os.path.split(directory_path)[1])[1]
             if not os.path.exists('extraction/masks'):
                 os.makedirs('extraction/masks')
             cv2.imwrite('extraction/masks/'+dirpath+str(i)+'.jpg',result)
             if(expr):
-                with open(directory_path+"/expression.txt", "ab") as f:
-                    np.savetxt(f, [expr],  delimiter=' ')
+                with open(directory_path+"/expression1.txt", "ab") as f:
+                    np.savetxt(f, [expression1])
+                with open(directory_path+"/expression2.txt", "ab") as f:
+                    np.savetxt(f, [expression2])
+                with open(directory_path+"/expression3.txt", "ab") as f:
+                    np.savetxt(f, [expression3])
+                with open(directory_path+"/expression4.txt", "ab") as f:
+                    np.savetxt(f, [expression4])
+                with open(directory_path+"/expression5.txt", "ab") as f:
+                    np.savetxt(f, [expression5])
+                with open(directory_path+"/expression6.txt", "ab") as f:
+                    np.savetxt(f, [expression6])
+                with open(directory_path+"/expression7.txt", "ab") as f:
+                    np.savetxt(f, [expression7])
+        
     
 if __name__ == '__main__':
     args = parse_args()

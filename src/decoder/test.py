@@ -9,8 +9,8 @@ import tensorflow.keras.backend as K
 import tensorflow as tf
 
 df_dataset = pd.read_csv('../all_data.csv')
-BATCH_SIZE = 80
-CODE_SIZE = 3
+BATCH_SIZE = 32
+CODE_SIZE = 12
 
 
 def get_data(df, size):
@@ -24,14 +24,23 @@ def get_data(df, size):
         im_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         X[i] = im_rgb
         lips = file.Lips_distance
-        angles = file.Euler_angles
-        expression = file.Expression
+        theta = file.Theta
+        phi = file.Phi
+        psi = file.Psi
+        expression1 = file.Expression1
+        expression2 = file.Expression2
+        expression3 = file.Expression3
+        expression4 = file.Expression4
+        expression5 = file.Expression5
+        expression6 = file.Expression6
+        expression7 = file.Expression7
         center = file.Center
         box = file.Bounding_box
-        data[i][0] = lips
-        data[i][1] = np.sin(1)
-        data[i][2] = box
-    return X, data
+        #for angles, center and expression "cannot convert string to float"
+        X[i][0] = lips
+        X[i][1] = np.sin(1)
+        X[i][2] = box
+    return X 
 
 X, A = get_data(df_dataset, BATCH_SIZE)
 X = X.astype('float32') / 255.0 - 0.5
@@ -162,7 +171,7 @@ show_image(apply_gaussian_noise(X_train[:1],sigma=0.1)[0])
 plt.subplot(1,4,4)
 show_image(apply_gaussian_noise(X_train[:1],sigma=0.5)[0])'''
 
-for i in range(1):
+for i in range(3):
     print("Epoch %i/25, Generating corrupted samples..."%(i+1))
     X_train_noise = apply_gaussian_noise(X_train)
     X_test_noise = apply_gaussian_noise(X_test)

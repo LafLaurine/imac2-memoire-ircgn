@@ -1,8 +1,11 @@
 # Mémoire IRCGN
 
-This school project is conducted by the [Institut de recherche criminelle de la gendarmerie nationale (IRCGN)](https://www.gendarmerie.interieur.gouv.fr/pjgn/IRCGN) and [Vincent Nozick](https://igm.univ-mlv.fr/~vnozick/)
+This project is conducted by the [Institut de recherche criminelle de la gendarmerie nationale (IRCGN)](https://www.gendarmerie.interieur.gouv.fr/pjgn/IRCGN) and [Vincent Nozick](https://igm.univ-mlv.fr/~vnozick/) 
 
-![Logo Imac](https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQeqrTno84BbxX6flWqxOde7pUbxg3vHPxYZA&usqp=CAU)
+<div align="center">
+  <img src="https://www.arnaudpelletier.com/wp-content/uploads/2018/09/1.png" alt="IRCGN" width=230 height=230/>
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcQeqrTno84BbxX6flWqxOde7pUbxg3vHPxYZA&usqp=CAU" alt="Logo IMAC"/>
+</div>
 
 ### Resources
 

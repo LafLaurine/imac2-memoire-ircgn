@@ -1,10 +1,11 @@
 import numpy as np
 import pandas as pd
+import os
 import cv2 
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from keras.layers import Dense, Flatten, Reshape, Input, InputLayer
-from keras.models import Sequential, Model
+from keras.models import Sequential, Model, model_from_json
 import tensorflow.keras.backend as K
 import tensorflow as tf
 
@@ -82,7 +83,19 @@ inp = Input((IMG_SHAPE))
 code = encoder_B(inp)
 reconstruction = decoder_B(code)
 
-autoencoder_B = Model(inp,reconstruction)
+if os.path.isfile('autoencoder_B.json') and os.path.isfile('autoencoder_B_weights.hdf5'):
+    # load json and create model
+    json_file = open('autoencoder_B.json', 'r')
+    loaded_autoencoder_B_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_autoencoder_B_json)
+    # load weights into new model
+    loaded_model.load_weights("autoencoder_B_weights.hdf5")
+    print("Loaded model from disk")
+    autoencoder_B = loaded_model
+else:
+    autoencoder_B = Model(inp,reconstruction)
+
 autoencoder_B.compile(optimizer='adamax', loss='mse')
 
 print(autoencoder_B.summary())
@@ -101,7 +114,19 @@ inp = Input((DATA_SHAPE))
 code = encoder_A(inp)
 reconstruction = decoder_A(code)
 
-autoencoder_A= Model(inp,reconstruction)
+if os.path.isfile('autoencoder_A.json') and os.path.isfile('autoencoder_A_weights.hdf5'):
+    # load json and create model
+    json_file = open('autoencoder_A.json', 'r')
+    loaded_autoencoder_A_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_autoencoder_A_json)
+    # load weights into new model
+    loaded_model.load_weights("autoencoder_A_weights.hdf5")
+    print("Loaded model from disk")
+    autoencoder_A = loaded_model
+else:
+    autoencoder_A = Model(inp,reconstruction)
+
 autoencoder_A.compile(optimizer='adamax', loss='mse')
 
 print(autoencoder_A.summary())
@@ -182,7 +207,7 @@ for i in range(3):
     print("Epoch %i/25, Generating corrupted samples..."%(i+1))
 
     # We continue to train our model with new noise-augmented data
-    autoencoder_B.fit(x=X_train, y=X_train, epochs=50,
+    autoencoder_B.fit(x=X_train, y=X_train, epochs=10,
                     validation_data=[X_test, X_test])
 
 for i in range(3):
@@ -195,7 +220,7 @@ for i in range(200):
     print("Epoch %i/200, Generating corrupted samples..."%(i+1))
 
     # We continue to train our model with new noise-augmented data
-    autoencoder_A.fit(x=A_train, y=A_train, epochs=50,
+    autoencoder_A.fit(x=A_train, y=A_train, epochs=10,
                     validation_data=[A_test, A_test])
 
 for i in range(3):
@@ -205,3 +230,19 @@ for i in range(3):
 for i in range(3):
     img = A_test[i]
     visualize_A_with_B(img,encoder_A,decoder_B)
+
+def save_model():
+
+  def save(model, model_name):
+      model_path = "%s.json" % model_name
+      weights_path = "%s_weights.hdf5" % model_name
+      options = {"file_arch": model_path,
+                  "file_weight": weights_path}
+      json_string = model.to_json()
+      open(options['file_arch'], 'w').write(json_string)
+      model.save_weights(options['file_weight'])
+
+  save(autoencoder_A, "autoencoder_A")
+  save(autoencoder_B, "autoencoder_B")
+
+save_model()

@@ -12,35 +12,28 @@ df_dataset = pd.read_csv('../all_data.csv')
 BATCH_SIZE = 80
 CODE_SIZE = 3
 
-cur_files = df_dataset.sample(frac=1).iloc[0:BATCH_SIZE]
 
-def get_real_images(df, size):
+def get_data(df, size):
     X = np.empty(shape=(size, 512, 512, 3))
+    data = np.empty(shape=(size, CODE_SIZE , 1))
+    cur_files = df_dataset.sample(frac=1).iloc[0:BATCH_SIZE]
     for i in range(0, size):
         file = cur_files.iloc[i]
         img_uri = '../'+file.File_name
         img = cv2.imread(img_uri)
         im_rgb = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         X[i] = im_rgb
-    return X
-
-def get_real_data(df, size):
-    X = np.empty(shape=(size, CODE_SIZE , 1))
-    for i in range(0, size):
-        file = cur_files.iloc[i]
         lips = file.Lips_distance
         angles = file.Euler_angles
         expression = file.Expression
-        print(angles)
         center = file.Center
         box = file.Bounding_box
-        #for angles, center and expression "cannot convert string to float"
-        X[i][0] = lips
-        X[i][1] = np.sin(1)
-        X[i][2] = box
-    return X 
+        data[i][0] = lips
+        data[i][1] = np.sin(1)
+        data[i][2] = box
+    return X, data
 
-X = get_real_images(df_dataset, BATCH_SIZE)
+X, A = get_data(df_dataset, BATCH_SIZE)
 X = X.astype('float32') / 255.0 - 0.5
 print(X.max(), X.min())
 
@@ -80,7 +73,6 @@ print(autoencoder_B.summary())
 
 ###################  DATA AUTOENCODER
 
-A = get_real_data(df_dataset, BATCH_SIZE)
 print('A           aaaaaaaaaaaaaaaaaaaa :: \n')
 print(A)
 print('\n')

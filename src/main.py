@@ -75,6 +75,8 @@ def main():
             expr = get_expression(frame)
             result = create_mask(frame)
             dirpath = os.path.split(os.path.split(directory_path)[1])[1]
+            if not os.path.exists('extraction/masks'):
+                os.makedirs('extraction/masks')
             cv2.imwrite('extraction/masks/'+dirpath+str(i)+'.jpg',result)
             if(expr):
                 with open(directory_path+"/expression.txt", "ab") as f:

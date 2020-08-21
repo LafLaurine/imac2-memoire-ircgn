@@ -35,6 +35,8 @@ def perspective_trans(imagePoints,frame):
     plt.show()'''
 
     directory = '../dataset/standardize_pic'
+    if not os.path.exists(directory):
+        os.makedirs(directory)
     os.chdir(directory) 
     cv2.imwrite('standardize.png',dst)
     directory = '../../src'

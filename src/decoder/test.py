@@ -9,9 +9,8 @@ import tensorflow.keras.backend as K
 import tensorflow as tf
 
 df_dataset = pd.read_csv('../all_data.csv')
-BATCH_SIZE = 32
+BATCH_SIZE = 128
 CODE_SIZE = 12
-
 
 def get_data(df, size):
     X = np.empty(shape=(size, 512, 512, 3))
@@ -36,11 +35,19 @@ def get_data(df, size):
         expression7 = file.Expression7
         center = file.Center
         box = file.Bounding_box
-        #for angles, center and expression "cannot convert string to float"
-        X[i][0] = lips
-        X[i][1] = np.sin(1)
-        X[i][2] = box
-    return X 
+        data[i][0] = lips
+        data[i][1] = theta
+        data[i][2] = phi
+        data[i][3] = psi
+        data[i][4] = expression1
+        data[i][5] = expression2
+        data[i][6] = expression3
+        data[i][7] = expression4
+        data[i][8] = expression5
+        data[i][9] = expression6
+        data[i][10] = expression7
+        data[i][11] = box
+    return X, data
 
 X, A = get_data(df_dataset, BATCH_SIZE)
 X = X.astype('float32') / 255.0 - 0.5
@@ -173,16 +180,10 @@ show_image(apply_gaussian_noise(X_train[:1],sigma=0.5)[0])'''
 
 for i in range(3):
     print("Epoch %i/25, Generating corrupted samples..."%(i+1))
-    X_train_noise = apply_gaussian_noise(X_train)
-    X_test_noise = apply_gaussian_noise(X_test)
 
     # We continue to train our model with new noise-augmented data
-    autoencoder_B.fit(x=X_train_noise, y=X_train, epochs=10,
-                    validation_data=[X_test_noise, X_test])
-
-
-
-X_test_noise = apply_gaussian_noise(X_test)
+    autoencoder_B.fit(x=X_train, y=X_train, epochs=50,
+                    validation_data=[X_test, X_test])
 
 for i in range(3):
     img = X_test[i]
@@ -192,16 +193,10 @@ for i in range(3):
 
 for i in range(200):
     print("Epoch %i/200, Generating corrupted samples..."%(i+1))
-    A_train_noise = apply_gaussian_noise(A_train)
-    A_test_noise = apply_gaussian_noise(A_test)
 
     # We continue to train our model with new noise-augmented data
-    autoencoder_A.fit(x=A_train_noise, y=A_train, epochs=10,
-                    validation_data=[A_test_noise, A_test])
-
-
-
-A_test_noise = apply_gaussian_noise(A_test)
+    autoencoder_A.fit(x=A_train, y=A_train, epochs=50,
+                    validation_data=[A_test, A_test])
 
 for i in range(3):
     img = A_test[i]
@@ -209,4 +204,4 @@ for i in range(3):
 
 for i in range(3):
     img = A_test[i]
-    visualize_A_with_B(img,encoder_A,decoder_B)    
+    visualize_A_with_B(img,encoder_A,decoder_B)

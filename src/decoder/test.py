@@ -4,7 +4,7 @@ import os
 import cv2 
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from keras.layers import Dense, Flatten, Reshape, Input, InputLayer
+from keras.layers import Dense, Flatten, Reshape, Input, InputLayer, Conv2D, Conv2DTranspose, MaxPooling2D
 from keras.models import Sequential, Model, model_from_json
 import tensorflow.keras.backend as K
 import tensorflow as tf
@@ -52,7 +52,6 @@ def get_data(df, size):
 
 X, A = get_data(df_dataset, BATCH_SIZE)
 X = X.astype('float32') / 255.0 - 0.5
-print(X.max(), X.min())
 
 def show_image(x):
     plt.imshow(np.clip(x + 0.5, 0, 1))
@@ -61,19 +60,32 @@ def show_image(x):
 
 X_train, X_test = train_test_split(X, test_size=0.1, random_state=42)
 
+filters=(32,64,128,256)
+depth = 3
+chanDim = -1
+
 def build_autoencoder(img_shape, code_size):
     # The encoder
     encoder = Sequential()
     encoder.add(InputLayer(img_shape))
+    encoder.add(Conv2D(32, (3, 3), strides = (1,1), padding="same", activation='relu'))
+    encoder.add(Conv2D(64, (3, 3), strides = (2, 2), padding="same", activation='relu'))
+    encoder.add(Conv2D(128, (3, 3), strides = (2, 2), padding="same", activation='relu'))
+    encoder.add(Conv2D(256, (3, 3), strides = (2, 2), padding="same", activation='relu'))
     encoder.add(Flatten())
     encoder.add(Dense(code_size))
 
     # The decoder
     decoder = Sequential()
     decoder.add(InputLayer((code_size,)))
-    decoder.add(Dense(np.prod(img_shape))) # np.prod(img_shape) is the same as 32*32*3, it's more generic than saying 3072
-    decoder.add(Reshape(img_shape))
+    decoder.add(Dense(64*64*256))
+    decoder.add(Reshape((64,64,256)))
+    decoder.add(Conv2DTranspose(filters=128, kernel_size=(3, 3), strides=2, activation='relu', padding='same'))
+    decoder.add(Conv2DTranspose(filters=64, kernel_size=(3, 3), strides=2, activation='relu', padding='same'))
+    decoder.add(Conv2DTranspose(filters=3, kernel_size=(3, 3), strides=2, activation='relu', padding='same'))
 
+    encoder.summary()
+    decoder.summary()
     return encoder, decoder
 ################### IMAGE AUTOENCODER
 IMG_SHAPE = (X.shape[1:])
@@ -102,12 +114,10 @@ print(autoencoder_B.summary())
 
 ###################  DATA AUTOENCODER
 
-print('A           aaaaaaaaaaaaaaaaaaaa :: \n')
-print(A)
-print('\n')
 A_train, A_test = train_test_split(A, test_size=0.1, random_state=42)
 
-DATA_SHAPE = (A.shape[1:])
+DATA_SHAPE = (A.shape[1:] + (1,))
+print(DATA_SHAPE)
 encoder_A, decoder_A = build_autoencoder(DATA_SHAPE, CODE_SIZE)
 
 inp = Input((DATA_SHAPE))
@@ -130,7 +140,6 @@ else:
 autoencoder_A.compile(optimizer='adamax', loss='mse')
 
 print(autoencoder_A.summary())
-
 
 def visualize_B(img,encoder,decoder):
     """Draws original, encoded and decoded images"""
@@ -205,8 +214,6 @@ show_image(apply_gaussian_noise(X_train[:1],sigma=0.5)[0])'''
 
 for i in range(3):
     print("Epoch %i/25, Generating corrupted samples..."%(i+1))
-
-    # We continue to train our model with new noise-augmented data
     autoencoder_B.fit(x=X_train, y=X_train, epochs=10,
                     validation_data=[X_test, X_test])
 
@@ -219,7 +226,6 @@ for i in range(3):
 for i in range(200):
     print("Epoch %i/200, Generating corrupted samples..."%(i+1))
 
-    # We continue to train our model with new noise-augmented data
     autoencoder_A.fit(x=A_train, y=A_train, epochs=10,
                     validation_data=[A_test, A_test])
 

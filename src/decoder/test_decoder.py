@@ -4,10 +4,9 @@ import os
 import cv2 
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
-from keras.layers import Dense, Flatten, Reshape, Input, InputLayer, Conv2D, Conv2DTranspose, MaxPooling2D
-from keras.models import Sequential, Model, model_from_json
+from tensorflow.keras.layers import Dense, Flatten, Reshape, Input, Conv2D, Conv2DTranspose, LeakyReLU, BatchNormalization
+from tensorflow.keras.models import Sequential, Model, model_from_json
 import tensorflow.keras.backend as K
-import tensorflow as tf
 
 df_dataset = pd.read_csv('../all_data.csv')
 BATCH_SIZE = 128
@@ -59,42 +58,35 @@ def show_image(x):
 
 
 X_train, X_test = train_test_split(X, test_size=0.1, random_state=42)
+A_train, A_test = train_test_split(A, test_size=0.1, random_state=42)
+A_train = A_train[:, :, 0]
+A_test = A_test[:, :, 0]
 
 filters=(32,64,128,256)
 depth = 3
 chanDim = -1
 
-def build_autoencoder(img_shape, code_size):
-    # The encoder
-    encoder = Sequential()
-    encoder.add(InputLayer(img_shape))
-    encoder.add(Conv2D(32, (3, 3), strides = (1,1), padding="same", activation='relu'))
-    encoder.add(Conv2D(64, (3, 3), strides = (2, 2), padding="same", activation='relu'))
-    encoder.add(Conv2D(128, (3, 3), strides = (2, 2), padding="same", activation='relu'))
-    encoder.add(Conv2D(256, (3, 3), strides = (2, 2), padding="same", activation='relu'))
-    encoder.add(Flatten())
-    encoder.add(Dense(code_size))
-
+def build_decoder(code_size):
     # The decoder
     decoder = Sequential()
-    decoder.add(InputLayer((code_size,)))
-    decoder.add(Dense(64*64*256))
-    decoder.add(Reshape((64,64,256)))
+    decoder.add(Input(shape=(code_size,)))
+    decoder.add(Dense(64*64*3))
+    decoder.add(Reshape((64,64,3)))
+    decoder.add(LeakyReLU(alpha=0.3))
     decoder.add(Conv2DTranspose(filters=128, kernel_size=(3, 3), strides=2, activation='relu', padding='same'))
+    decoder.add(BatchNormalization(epsilon=0.005))
     decoder.add(Conv2DTranspose(filters=64, kernel_size=(3, 3), strides=2, activation='relu', padding='same'))
-    decoder.add(Conv2DTranspose(filters=3, kernel_size=(3, 3), strides=2, activation='relu', padding='same'))
+    decoder.add(BatchNormalization(epsilon=0.005))
+    decoder.add(Conv2DTranspose(filters=3, kernel_size=(3, 3), strides=2, activation=None, padding='same'))
+    return decoder
 
-    encoder.summary()
-    decoder.summary()
-    return encoder, decoder
-################### IMAGE AUTOENCODER
-IMG_SHAPE = (X.shape[1:])
-encoder_B, decoder_B = build_autoencoder(IMG_SHAPE, CODE_SIZE)
+decoder = build_decoder(CODE_SIZE)
+decoder.compile(optimizer='adam', loss='mse')
+decoder.summary()
+decoder.fit(x=A_train, y=A_train, epochs=2,validation_data=[A_test, A_test])
 
-inp = Input((IMG_SHAPE))
-code = encoder_B(inp)
-reconstruction = decoder_B(code)
 
+'''
 if os.path.isfile('autoencoder_B.json') and os.path.isfile('autoencoder_B_weights.hdf5'):
     # load json and create model
     json_file = open('autoencoder_B.json', 'r')
@@ -203,18 +195,9 @@ def apply_gaussian_noise(X, sigma=0.1):
     noise = np.random.normal(loc=0.0, scale=sigma, size=X.shape)
     return X + noise
 
-'''plt.subplot(1,4,1)
-show_image(X_train[0])
-plt.subplot(1,4,2)
-show_image(apply_gaussian_noise(X_train[:1],sigma=0.01)[0])
-plt.subplot(1,4,3)
-show_image(apply_gaussian_noise(X_train[:1],sigma=0.1)[0])
-plt.subplot(1,4,4)
-show_image(apply_gaussian_noise(X_train[:1],sigma=0.5)[0])'''
-
 for i in range(3):
     print("Epoch %i/25, Generating corrupted samples..."%(i+1))
-    autoencoder_B.fit(x=X_train, y=X_train, epochs=10,
+    autoencoder_B.fit(x=X_train, y=X_train, epochs=2,
                     validation_data=[X_test, X_test])
 
 for i in range(3):
@@ -226,7 +209,7 @@ for i in range(3):
 for i in range(200):
     print("Epoch %i/200, Generating corrupted samples..."%(i+1))
 
-    autoencoder_A.fit(x=A_train, y=A_train, epochs=10,
+    autoencoder_A.fit(x=A_train, y=A_train, epochs=2,
                     validation_data=[A_test, A_test])
 
 for i in range(3):
@@ -251,4 +234,4 @@ def save_model():
   save(autoencoder_A, "autoencoder_A")
   save(autoencoder_B, "autoencoder_B")
 
-save_model()
+save_model()'''

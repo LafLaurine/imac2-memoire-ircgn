@@ -66,6 +66,13 @@ filters=(32,64,128,256)
 depth = 3
 chanDim = -1
 
+def custom_loss(y_true, y_pred):
+   y2_pred = y_pred[0]
+   y2_true = y_true[0]
+
+   loss = K.mean(K.square(y2_true - y2_pred), axis=-1)
+   return loss
+
 def build_decoder(code_size):
     # The decoder
     decoder = Sequential()
@@ -81,7 +88,7 @@ def build_decoder(code_size):
     return decoder
 
 decoder = build_decoder(CODE_SIZE)
-decoder.compile(optimizer='adam', loss='mse')
+decoder.compile(optimizer='adam', loss=custom_loss,loss_weights=[1.0])
 decoder.summary()
 decoder.fit(x=A_train, y=A_train, epochs=2,validation_data=[A_test, A_test])
 

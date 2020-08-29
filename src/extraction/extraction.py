@@ -69,6 +69,8 @@ def main():
                     chip = cv2.warpPerspective(frame, chipMatrix, (chipSize, chipSize))
                 x_center = ((mean-256)/512)[0]
                 y_center = ((mean-256)/512)[1]
+                if not os.path.exists(subdirectory):
+                    os.makedirs(subdirectory)
                 with open("extracted_faces/"+subdirectory+"/center.txt", "ab") as f:
                     np.savetxt(f, [[x_center,y_center]])
                 with open("extracted_faces/"+subdirectory+"/bounding_box.txt", "ab") as f:

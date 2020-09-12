@@ -11,7 +11,9 @@ import tensorflow.keras.backend as K
 df_dataset = pd.read_csv('../all_data.csv')
 BATCH_SIZE = 64
 CODE_SIZE = 14
-EPOCHS = 50
+EPOCHS = 10
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 
 def get_data(df, size):
     X = np.empty(shape=(size, 512, 512, 3))
@@ -57,10 +59,6 @@ def get_data(df, size):
 X, A = get_data(df_dataset, BATCH_SIZE)
 X = X.astype('float32') / 255.0 - 0.5
 
-def show_image(x):
-    plt.imshow(np.clip(x + 0.5, 0, 1))
-    plt.show()
-
 def get_image_training_set():
     X_train, X_test = train_test_split(X, test_size=0.1, random_state=42)
     return X_train, X_test
@@ -99,6 +97,7 @@ if os.path.isfile('decoder.json') and os.path.isfile('decoder_weights.hdf5'):
     loaded_decoder = json_file.read()
     json_file.close()
     loaded_model = model_from_json(loaded_decoder)
+    loaded_model = build_decoder(CODE_SIZE)
     # load weights into new model
     loaded_model.load_weights("decoder_weights.hdf5")
     print("Loaded model from disk")

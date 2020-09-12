@@ -24,7 +24,6 @@ f_list = []
 
 ## Get arguments from user
 def parse_args():
-    """Parse input arguments."""
     parser = argparse.ArgumentParser(description='Detecting landmarks')
     parser.add_argument('--directory', dest='directory_path', help='Path of directory', required=True)
     args = parser.parse_args()
@@ -37,20 +36,29 @@ def draw(filename, frame, imagePoints):
         if(distancelips):
             with open(directory_path+"/lips_dist.txt", "ab") as f:
                 np.savetxt(f, [distancelips])
+        else:
+            with open(directory_path+"/lips_dist.txt", "ab") as f:
+                np.savetxt(f, [0])
         N,Q,R = get_rotation_matrix(imagePoints)
         (theta, phi, psi) = rotationMatrixToEulerAngles(Q) * 180 / np.pi
-        if((theta, phi, psi)):
+        if(theta,phi,psi):
             with open(directory_path+"/theta.txt", "ab") as f:
-                    np.savetxt(f, [theta])
+                np.savetxt(f, [theta])
             with open(directory_path+"/phi.txt", "ab") as f:
-                    np.savetxt(f, [phi]) 
+                np.savetxt(f, [phi]) 
             with open(directory_path+"/psi.txt", "ab") as f:
-                    np.savetxt(f, [psi])               
+                np.savetxt(f, [psi]) 
+        else:
+            with open(directory_path+"/theta.txt", "ab") as f:
+                np.savetxt(f, [theta])
+            with open(directory_path+"/phi.txt", "ab") as f:
+                np.savetxt(f, [phi]) 
+            with open(directory_path+"/psi.txt", "ab") as f:
+                np.savetxt(f, [psi]) 
         x_axis = Q[:,0]
         y_axis = Q[:,1]
         z_axis = Q[:,2]
         imagePoints = imagePoints[0]        
-        # compute the Mean-Centered-Scaled Points
         mean = np.mean(imagePoints, axis=0)
     else:
         os.remove(directory_path+"/"+filename)

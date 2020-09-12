@@ -39,7 +39,7 @@ def main():
             # Run the face alignment tracker
             if(ret):
                 imagePoints = fa.get_landmarks_from_image(frame)
-                if(imagePoints is not None):
+                if(imagePoints):
                     imagePoints = imagePoints[0]
 
                     # Compute the Anchor Landmarks
@@ -67,17 +67,15 @@ def main():
                     # Compute the Perspective Homography and Extract the chip from the image
                     chipMatrix = cv2.getPerspectiveTransform(imageCorners, chipCorners)
                     chip = cv2.warpPerspective(frame, chipMatrix, (chipSize, chipSize))
+                    
                 x_center = ((mean-256)/512)[0]
                 y_center = ((mean-256)/512)[1]
                 if not os.path.exists("extracted_faces/"+subdirectory):
                     os.makedirs("extracted_faces/"+subdirectory)
-                with open("extracted_faces/"+subdirectory+"/center1.txt", "ab") as f:
-                    np.savetxt(f, [[x_center]])
-                with open("extracted_faces/"+subdirectory+"/center2.txt", "ab") as f:
-                    np.savetxt(f, [[y_center]])
+                with open("extracted_faces/"+subdirectory+"/center.txt", "ab") as f:
+                    np.savetxt(f, [[x_center,y_center]])
                 with open("extracted_faces/"+subdirectory+"/bounding_box.txt", "ab") as f:
                     np.savetxt(f, [[512/max(width,hight)]])    
-                #if frameId % multiplier == 0:
                 print("Saving face... %d" % frameId)
                 path = pathlib.Path('extracted_faces/'+subdirectory).mkdir(parents=True, exist_ok=True) 
                 imageName = "00000%d.jpg" % frameId

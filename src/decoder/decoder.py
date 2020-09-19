@@ -11,7 +11,7 @@ import tensorflow.keras.backend as K
 df_dataset = pd.read_csv('../all_data.csv')
 BATCH_SIZE = 64
 CODE_SIZE = 14
-EPOCHS = 10
+EPOCHS = 20
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
 
@@ -69,6 +69,10 @@ def get_data_training_set():
     A_test = A_test[:, :, 0]
     return A_train, A_test
 
+def show_image(x):
+    plt.imshow(np.clip(x + 0.5, 0, 1))
+    plt.show()
+
 def custom_loss(y_true, y_pred):
    y2_pred = y_pred[0]
    y2_true = y_true[0]
@@ -102,10 +106,29 @@ if os.path.isfile('decoder.json') and os.path.isfile('decoder_weights.hdf5'):
     loaded_model.load_weights("decoder_weights.hdf5")
     print("Loaded model from disk")
     decoder = loaded_model
-else:
-    decoder = build_decoder(CODE_SIZE)
+
+decoder = build_decoder(CODE_SIZE)
 decoder.compile(optimizer='adam', loss=custom_loss,loss_weights=[1.0])
 decoder.summary()
+
+# Choosen vector
+vector = A[4].reshape((1,14))
+
+def visualize(decoder, i):
+    reco = decoder.predict(vector)
+    reco = np.array(reco)
+    reco.reshape((512,512,3))
+    reco = np.squeeze(reco,axis=0)
+    cv2.imwrite('reconstructed'+str(i)+'.jpg', cv2.cvtColor(255*(reco+0.5), cv2.COLOR_RGB2BGR))
+    plt.subplot(1,3,3)
+    plt.title("Reconstructed")
+    show_image(reco)
+    plt.show()
+
+for i in range(EPOCHS):
+    print("Epoch %i, Generating images..."%(i))
+    decoder.fit(x=A_train, y=X_train, epochs=EPOCHS,validation_data=[A_test, X_test])
+    visualize(decoder, i)
 
 def save_model():
 

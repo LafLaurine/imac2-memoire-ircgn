@@ -29,10 +29,10 @@ def parse_args():
     args = parser.parse_args()
     return args
 
-def draw(filename, frame, imagePoints):
+def draw(filename, frame, imagePoints, fa):
     if(imagePoints):
         perspective_trans(imagePoints,frame)
-        distancelips = get_distance_lips()
+        distancelips = get_distance_lips(fa, imagePoints)
         if(distancelips):
             with open(directory_path+"/lips_dist.txt", "ab") as f:
                 np.savetxt(f, [distancelips])
@@ -82,7 +82,7 @@ def main():
         frame = images[i]
         print(filenames[i])
         imagePoints = detect_landmarks(frame, fa)
-        draw(filenames[i], frame, imagePoints)
+        draw(filenames[i], frame, imagePoints, fa)
         if(imagePoints):
             expr = get_expression(frame)
             expression1 = expr[0]

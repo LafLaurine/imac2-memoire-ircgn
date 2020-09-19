@@ -8,13 +8,11 @@ import matplotlib.pyplot as plt
 
 from get_rotation_matrix import *
 
-def get_distance_lips():
+def get_distance_lips(fa, imagePoints):
     image_path = "../dataset/standardize_pic/standardize.png"
     frame = cv2.imread(image_path,1)
 
     # Get landmarks of the input image
-    fa = face_alignment.FaceAlignment(face_alignment.LandmarksType._3D, device='cpu', flip_input=False, face_detector='sfd')
-    imagePoints = fa.get_landmarks_from_image(frame)
     if(imagePoints):
         height, width ,aux= frame.shape
         x_upper_lips_center = imagePoints[0][62][0]
